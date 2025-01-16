@@ -55,6 +55,7 @@
     "@solana/spl-token": "^0.4.9",
     "@solana/wallet-standard-features": "^1.2.0",
     "@solana/web3.js": "^1.95.4",
+    "@tolar/web3-plugin-tolar": "0.9.4",
     "@wallet-standard/base": "^0.0.0-20240703212708",
     "add": "^2.0.6",
     "bignumber.js": "^9.1.2",
@@ -82,7 +83,9 @@
     "vue-router": "^4.4.5",
     "vue3-lottie": "^3.3.1",
     "vuedraggable": "^4.1.0",
+    "web3": "^4.15.0",
     "web3-eth": "^1.10.4",
+    "web3-eth-accounts": "^4.3.0",
     "web3-utils": "^1.10.4",
     "yarn": "^1.22.22",
     "zxcvbn": "^4.4.2"

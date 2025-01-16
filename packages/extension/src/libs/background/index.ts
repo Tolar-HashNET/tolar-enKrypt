@@ -73,6 +73,7 @@ class BackgroundHandler {
     msg: Message,
     options: ExternalMessageOptions = { savePersistentEvents: true },
   ): Promise<OnMessageResponse> {
+    console.log("!-- externalHandler --!");
     const { method, params } = JSON.parse(msg.message);
     const _provider = msg.provider;
     const _tabid = msg.sender.tabId;
@@ -144,6 +145,7 @@ class BackgroundHandler {
       });
   }
   internalHandler(msg: Message): Promise<InternalOnMessageResponse> {
+    console.log("!-- internalHandler --!");
     const message = JSON.parse(msg.message) as RPCRequestType;
     switch (message.method) {
       case InternalMethods.sign:
