@@ -4,6 +4,7 @@ import PolkadotNetworks from '@/providers/polkadot/networks';
 import BitcoinNetworks from '@/providers/bitcoin/networks';
 import KadenaNetworks from '@/providers/kadena/networks';
 import SolanaNetworks from '@/providers/solana/networks';
+import TolarNetworks from "@/providers/tolar/networks";
 import { NetworkNames, WalletType } from '@enkryptcom/types';
 import { getAccountsByNetworkName } from '@/libs/utils/accounts';
 export const initAccounts = async (keyring: KeyRing) => {
@@ -12,6 +13,7 @@ export const initAccounts = async (keyring: KeyRing) => {
   const sr25519 = await getAccountsByNetworkName(NetworkNames.Polkadot);
   const ed25519kda = await getAccountsByNetworkName(NetworkNames.Kadena);
   const ed25519sol = await getAccountsByNetworkName(NetworkNames.Solana);
+  const secp256k1tol = await getAccountsByNetworkName(NetworkNames.Tolar);
   if (secp256k1.length == 0)
     await keyring.saveNewAccount({
       basePath: EthereumNetworks.ethereum.basePath,
@@ -45,6 +47,13 @@ export const initAccounts = async (keyring: KeyRing) => {
       basePath: SolanaNetworks.solana.basePath,
       name: 'Solana Account 1',
       signerType: SolanaNetworks.solana.signer[0],
+      walletType: WalletType.mnemonic,
+    });
+  if (secp256k1tol.length == 0)
+    await keyring.saveNewAccount({
+      basePath: TolarNetworks.tolarMainnetNetwork.basePath,
+      name: "Tolar Account 1",
+      signerType: TolarNetworks.tolarMainnetNetwork.signer[0],
       walletType: WalletType.mnemonic,
     });
 };

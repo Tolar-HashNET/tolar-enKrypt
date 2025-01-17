@@ -9,6 +9,7 @@ import PolkadotProvider from '@/providers/polkadot/inject';
 import BitcoinProvider from '@/providers/bitcoin/inject';
 import KadenaProvider from '@/providers/kadena/inject';
 import SolanaProvider from '@/providers/solana/inject';
+import TolarProvider from "@/providers/tolar/inject";
 
 import { InternalMethods } from '@/types/messenger';
 
@@ -41,6 +42,11 @@ const loadInjectedProviders = () => {
   SolanaProvider(window, {
     name: ProviderName.solana,
     type: ProviderType.solana,
+    sendMessageHandler: providerSendMessage,
+  });
+  TolarProvider(window, {
+    name: ProviderName.tolar,
+    type: ProviderType.tolar,
     sendMessageHandler: providerSendMessage,
   });
 };

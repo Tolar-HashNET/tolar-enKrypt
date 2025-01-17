@@ -279,6 +279,7 @@ const updateGradient = (newGradient: string) => {
       `radial-gradient(137.35% 97% at 100% 50%, rgba(250, 250, 250, 0.94) 0%, rgba(250, 250, 250, 0.96) 28.91%, rgba(250, 250, 250, 0.98) 100%), linear-gradient(180deg, ${newGradient} 80%, #684CFF 100%)`;
 };
 const setNetwork = async (network: BaseNetwork) => {
+  console.error(`!-- Set network called--!`);
   trackNetworkSelected(NetworkChangeEvents.NetworkChangePopup, {
     provider: network.provider,
     network: network.name,

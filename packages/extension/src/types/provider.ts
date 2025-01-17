@@ -3,6 +3,7 @@ import type { InjectedProvider as PolkadotProvider } from '@/providers/polkadot/
 import type { InjectedProvider as BitcoinProvider } from '@/providers/bitcoin/types';
 import type { InjectedProvider as KadenaProvider } from '@/providers/kadena/types';
 import type { InjectedProvider as SolanaProvider } from '@/providers/solana/types';
+import type { InjectedProvider as TolarProvider } from "@/providers/tolar/types";
 import EventEmitter from 'eventemitter3';
 import {
   MiddlewareFunction,
@@ -24,6 +25,7 @@ import {
   KadenaRawInfo,
   SOLRawInfo,
 } from './activity';
+import { RpcTxResponse } from "@tolar/web3-plugin-tolar";
 
 export enum ProviderName {
   enkrypt = 'enkrypt',
@@ -32,6 +34,7 @@ export enum ProviderName {
   polkadot = 'polkadot',
   kadena = 'kadena',
   solana = 'solana',
+  tolar = "tolar",
 }
 export enum InternalStorageNamespace {
   keyring = 'KeyRing',
@@ -42,6 +45,7 @@ export enum InternalStorageNamespace {
   bitcoinAccountsState = 'BitcoinAccountsState',
   kadenaAccountsState = 'KadenaAccountsState',
   solanaAccountsState = 'SolanaAccountsState',
+  tolarAccountsState = "TolarAccountsState",
   activityState = 'ActivityState',
   marketData = 'MarketData',
   cacheFetch = 'CacheFetch',
@@ -63,6 +67,7 @@ export enum ProviderType {
   bitcoin,
   kadena,
   solana,
+  tolar,
 }
 
 export type SendMessageHandler = (
@@ -139,6 +144,7 @@ export abstract class ProviderAPIInterface {
     | BTCRawInfo
     | KadenaRawInfo
     | SOLRawInfo
+    | RpcTxResponse
     | null
   >;
 }
@@ -158,13 +164,15 @@ export {
   BitcoinProvider,
   KadenaProvider,
   SolanaProvider,
+  TolarProvider,
 };
 export type Provider =
   | EthereumProvider
   | PolkadotProvider
   | BitcoinProvider
   | KadenaProvider
-  | SolanaProvider;
+  | SolanaProvider
+  | TolarProvider;
 
 export interface ProviderRequestOptions {
   url: string;

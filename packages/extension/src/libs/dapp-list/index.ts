@@ -101,6 +101,8 @@ const lists: Partial<Record<NetworkNames, string>> = {
     'https://raw.githubusercontent.com/enkryptcom/dynamic-data/main/dapps/linea.json',
   [NetworkNames.XLayer]:
     'https://raw.githubusercontent.com/enkryptcom/dynamic-data/main/dapps/xlayer.json',
+  [NetworkNames.Tolar]:
+    "https://raw.githubusercontent.com/enkryptcom/dynamic-data/main/dapps/tol.json",
 };
 
 export default lists;

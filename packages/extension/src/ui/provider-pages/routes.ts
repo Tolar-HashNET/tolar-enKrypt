@@ -6,6 +6,7 @@ import PolkadotUI from '@/providers/polkadot/ui';
 import BitcoinUI from '@/providers/bitcoin/ui';
 import KadenaUI from '@/providers/kadena/ui';
 import SolanaUI from '@/providers/solana/ui';
+import TolarUI from "@/providers/tolar/ui";
 import EnkryptUI from './enkrypt';
 const uiProviders = [
   EthereumUI,
@@ -14,6 +15,7 @@ const uiProviders = [
   EnkryptUI,
   KadenaUI,
   SolanaUI,
+  TolarUI,
 ];
 let uiRoutes: RouteRecordRaw[] = [];
 uiProviders.forEach(provider => {

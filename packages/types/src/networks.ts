@@ -96,6 +96,10 @@ export enum NetworkNames {
   Holesky = "HOLESKY",
   Bitrock = "bitrock",
   Fraxtal = "fraxtal",
+  Tolar = "Tol",
+  TolarTestnet = "TolTestnet",
+  TolarStaging = "TolStaging",
+  TolarLocal = "TolLocal",
 }
 
 export enum CoingeckoPlatform {

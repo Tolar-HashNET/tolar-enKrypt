@@ -1,0 +1,19 @@
+import { NetworkNames } from "@enkryptcom/types";
+import { TolarNetwork, TolarNetworkOptions } from "../types/tolar-network";
+import { NetworkId } from "@tolar/web3-plugin-tolar";
+import icon from './icons/tolar-mainnet.png';
+
+const tolarMainnetOptions: TolarNetworkOptions = {
+  networkId: NetworkId.Mainnet,
+  name: NetworkNames.Tolar,
+  name_long: "Tolar",
+  blockExplorerTX: "https://blockscout.tolar.io/tx/[[txHash]]",
+  blockExplorerAddr: "https://blockscout.tolar.io/address/[[address]]",
+  isTestNetwork: false,
+  icon,
+  node: "https://jsongw.mainnet.tolar.io/jsonrpc",
+};
+
+const tolarMainnetNetwork = new TolarNetwork(tolarMainnetOptions);
+
+export default tolarMainnetNetwork;

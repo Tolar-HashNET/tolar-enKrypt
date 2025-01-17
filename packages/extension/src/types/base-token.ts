@@ -3,6 +3,7 @@ import MarketData from '@/libs/market-data';
 import { ApiPromise } from '@polkadot/api';
 import BitcoinAPI from '@/providers/bitcoin/libs/api';
 import KadenaAPI from '@/providers/kadena/libs/api';
+import TolarAPI from "@/providers/tolar/libs/api";
 import { BNType } from '@/providers/common/types';
 
 export type TransferType = 'keepAlive' | 'all' | 'allKeepAlive' | 'transfer';
@@ -60,12 +61,12 @@ export abstract class BaseToken {
   }
 
   public abstract getLatestUserBalance(
-    api: EvmAPI | ApiPromise | BitcoinAPI | KadenaAPI,
+    api: EvmAPI | ApiPromise | BitcoinAPI | KadenaAPI | TolarAPI,
     address: string,
   ): Promise<string>;
 
   public abstract send(
-    api: EvmAPI | ApiPromise,
+    api: EvmAPI | ApiPromise | TolarAPI,
     to: string,
     amount: string,
     options?: SendOptions,

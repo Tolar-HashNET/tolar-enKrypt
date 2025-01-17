@@ -42,7 +42,7 @@ export default defineConfig({
   define: {
     __PREFILL_PASSWORD__:
       process.env.NODE_ENV === 'development'
-        ? JSON.stringify('abcd.123')
+        ? JSON.stringify('abc.123')
         : JSON.stringify(''),
     __PACKAGE_VERSION__: JSON.stringify(version),
     __IS_DEV__: process.env.NODE_ENV === 'development',
