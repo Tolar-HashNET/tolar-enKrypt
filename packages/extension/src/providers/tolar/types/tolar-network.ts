@@ -24,12 +24,30 @@ export interface TolarNetworkOptions {
   node: string;
 }
 
+class ApiCache {
+  private cache: Map<string, TolarAPI> = new Map();
+
+  public get(node: string): TolarAPI {
+    let api = this.cache.get(node);
+    if (api) {
+      return api;
+    }
+
+    api = new TolarAPI(node);
+    this.cache.set(node, api);
+
+    return api;
+  }
+}
+
+const API_CACHE = new ApiCache();
+
 export class TolarNetwork extends BaseNetwork {
   public readonly networkId: number;
 
   constructor(options: TolarNetworkOptions) {
     const api = async () => {
-      return new TolarAPI(options.node);
+      return API_CACHE.get(options.node);
     };
 
     const baseOptions: BaseNetworkOptions = {

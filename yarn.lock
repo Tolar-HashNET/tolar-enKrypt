@@ -1654,7 +1654,7 @@ __metadata:
     "@solana/spl-token": "npm:^0.4.9"
     "@solana/wallet-standard-features": "npm:^1.2.0"
     "@solana/web3.js": "npm:^1.95.4"
-    "@tolar/web3-plugin-tolar": "npm:0.9.4"
+    "@tolar/web3-plugin-tolar": "npm:0.9.12"
     "@tsconfig/node20": "npm:^20.1.4"
     "@types/bs58": "npm:^4.0.4"
     "@types/chrome": "npm:^0.0.280"
@@ -1997,7 +1997,7 @@ __metadata:
     "@enkryptcom/types": "workspace:^"
     "@enkryptcom/utils": "workspace:^"
     "@ethereumjs/util": "npm:^9.1.0"
-    "@tolar/web3-plugin-tolar": "npm:^0.9.3"
+    "@tolar/web3-plugin-tolar": "npm:0.9.12"
     "@types/chai": "npm:^4.3.20"
     "@types/hdkey": "npm:^2.0.3"
     "@types/mocha": "npm:^10.0.8"
@@ -8606,15 +8606,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tolar/web3-plugin-tolar@npm:0.9.4, @tolar/web3-plugin-tolar@npm:^0.9.3":
-  version: 0.9.4
-  resolution: "@tolar/web3-plugin-tolar@npm:0.9.4"
+"@tolar/web3-plugin-tolar@npm:0.9.12":
+  version: 0.9.12
+  resolution: "@tolar/web3-plugin-tolar@npm:0.9.12"
   dependencies:
     "@protobuf-ts/runtime": "npm:>=2.9.4"
   peerDependencies:
     web3: ">= 4.0.3"
     web3-eth-accounts: ">=4.0.3"
-  checksum: 10/3f98d40e8f5b6fed7d29ff36408fa4a312714cc0c66de6f43a19fd986f97688834ca800411897e83c004929f8dfedcee72c64669bd981f584d943a423fcd2d5a
+  checksum: 10/6511003a9208e1bbd4f0d737f0fbbdafefbfe3c9ecb82f6d6fb5caacbd1b016c31668186a6a627fddf6b1d877cd3ad0f4571e2e2602637eb6b58b8fbbb8057fa
   languageName: node
   linkType: hard
 

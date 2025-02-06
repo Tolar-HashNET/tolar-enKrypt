@@ -29,3 +29,17 @@ export interface SignerTransactionOptions {
   payload: string;
   account: EnkryptAccount;
 }
+
+export interface DecodedTx {
+  toAddress?: string;
+  isContractCreation: boolean;
+  tokenValue: string;
+  tokenDecimals: number;
+  tokenSymbol: string;
+  tokenName: string;
+  tokenImage: string;
+  tokenTo: string | null;
+  dataHex: string;
+  decodedHex?: string[];
+  decoded: boolean;
+}

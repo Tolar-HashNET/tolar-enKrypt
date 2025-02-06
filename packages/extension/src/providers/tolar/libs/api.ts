@@ -5,7 +5,7 @@ import { logError } from "./utils";
 import {
   INVALID_NONCE,
   RpcTxResponse,
-  TolarPlugin,
+  TolarPlugin, TolNum,
 } from "@tolar/web3-plugin-tolar";
 
 class API implements ProviderAPIInterface {
@@ -13,7 +13,7 @@ class API implements ProviderAPIInterface {
   private readonly web3: Web3;
 
   constructor(node: string) {
-    console.error(`!-- Tolar::API:constructor called node: ${node} --!`);
+    //console.error(`!-- Tolar::API:constructor called node: ${node} --!`);
 
     this.node = node;
 
@@ -24,7 +24,6 @@ class API implements ProviderAPIInterface {
   public get api() {
     return this;
   }
-
 
   async init(): Promise<void> {}
 
@@ -38,10 +37,10 @@ class API implements ProviderAPIInterface {
     return null;
   }
 
-  async getBalance(address: string): Promise<string> {
+  async getBalance(address: string): Promise<TolNum> {
     try {
       const res = await this.web3.tolar.getLatestBalance(address);
-      return res.balance.toString();
+      return res.balance;
     } catch (e: unknown) {
       logError(e);
     }
@@ -49,9 +48,9 @@ class API implements ProviderAPIInterface {
     return "0";
   }
 
-  async getNonce(address: string): Promise<bigint> {
+  async getNonce(address: string): Promise<TolNum> {
     const nonce = await this.web3.tolar.getNonce(address);
-    return nonce === INVALID_NONCE ? 0n : nonce;
+    return BigInt(nonce) === INVALID_NONCE ? "0" : nonce;
   }
 
   public async sendSignedTransaction(

@@ -1,15 +1,9 @@
 import EventEmitter from "eventemitter3";
-import { handleIncomingMessage } from "./libs/message-handler";
-import { EthereumRequest, EthereumResponse } from "@/providers/ethereum/types";
-import {
-  ProviderName,
-  ProviderOptions,
-  ProviderType,
-  ProviderInterface,
-  SendMessageHandler,
-} from "@/types/provider";
-import { EnkryptWindow } from "@/types/globals";
-import { TolarNetworks } from "./types";
+import {handleIncomingMessage} from "./libs/message-handler";
+import {EthereumRequest, EthereumResponse} from "@/providers/ethereum/types";
+import {ProviderInterface, ProviderName, ProviderOptions, ProviderType, SendMessageHandler,} from "@/types/provider";
+import {EnkryptWindow} from "@/types/globals";
+import {TolarNetworks} from "./types";
 
 export class Provider extends EventEmitter implements ProviderInterface {
   connected: boolean;
@@ -21,9 +15,9 @@ export class Provider extends EventEmitter implements ProviderInterface {
   sendMessageHandler: SendMessageHandler;
 
   constructor(options: ProviderOptions) {
-    console.error("!-- PRE TolarInjectProvider:constructor called --!");
+    //console.error("!-- PRE TolarInjectProvider:constructor called --!");
     super();
-    console.error("!-- TolarInjectProvider:constructor called --!");
+    //console.error("!-- TolarInjectProvider:constructor called --!");
     this.connected = true;
     this.name = options.name;
     this.type = options.type;
@@ -32,17 +26,16 @@ export class Provider extends EventEmitter implements ProviderInterface {
   }
 
   async request(request: EthereumRequest): Promise<EthereumResponse> {
-    console.error(
-      `!-- TolarInjectProvider:request called request: ${JSON.stringify(
-        request
-      )} --!`
-    );
+    // console.error(
+    //   `!-- TolarInjectProvider:request called request: ${JSON.stringify(
+    //     request
+    //   )} --!`
+    // );
 
-    const res = (await this.sendMessageHandler(
+    return (await this.sendMessageHandler(
       this.name,
       JSON.stringify(request)
     )) as EthereumResponse;
-    return res;
   }
 
   isConnected(): boolean {
@@ -50,25 +43,14 @@ export class Provider extends EventEmitter implements ProviderInterface {
   }
 
   handleMessage(msg: string): void {
-    console.error(
-      `!-- TolarInjectProvider:handleMessage called msg: ${JSON.stringify(
-        msg
-      )} --!`
-    );
+    // console.error(
+    //   `!-- TolarInjectProvider:handleMessage called msg: ${JSON.stringify(
+    //     msg
+    //   )} --!`
+    // );
 
     handleIncomingMessage(this, msg);
   }
-
-  switchNetwork = async (network: number | string) => {
-    console.error(
-      `!-- TolarInjectProvider:switchNetwork called network: ${network} --!`
-    );
-
-    return this.request({
-      method: "tol_switchNetwork",
-      params: [network],
-    });
-  };
 }
 
 const injectDocument = (

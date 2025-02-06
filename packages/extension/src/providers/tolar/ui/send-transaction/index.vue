@@ -243,16 +243,16 @@ watch(addressFrom, () => {
 });
 
 const fetchTokens = async () => {
-  console.error("!-- fetchTokens CALLED --!");
+  //console.error("!-- fetchTokens CALLED --!");
 
   const networkApi = (await props.network.api()) as TolarAPI;
   const networkAssets = await props.network.getAllTokens(addressFrom.value);
   const pricePromises = networkAssets.map((asset) => asset.getLatestPrice());
   const balancePromises = networkAssets.map((asset) => {
     if (!asset.balance) {
-      console.error(
-        `!-- fetchTokens, addressFrom: ${addressFrom.value}; addressTo: ${addressTo.value} --!`
-      );
+      // console.error(
+      //   `!-- fetchTokens, addressFrom: ${addressFrom.value}; addressTo: ${addressTo.value} --!`
+      // );
       return networkApi.getBalance(addressFrom.value);
     }
 
@@ -260,7 +260,7 @@ const fetchTokens = async () => {
   });
 
   Promise.all([...pricePromises, ...balancePromises]).then(() => {
-    console.error(`!-- fetchTokens ALL PROMISES RESOLVED --!`);
+    //console.error(`!-- fetchTokens ALL PROMISES RESOLVED --!`);
 
     const nonZeroAssets = networkAssets.filter(
       (asset) => !toBN(asset.balance ?? "0").isZero()

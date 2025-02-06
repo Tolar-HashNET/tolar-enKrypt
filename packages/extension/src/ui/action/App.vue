@@ -115,6 +115,7 @@ import SolAccountState from '@/providers/solana/libs/accounts-state';
 import { MessageMethod } from '@/providers/ethereum/types';
 import { EvmNetwork } from '@/providers/ethereum/types/evm-network';
 import { MessageMethod as KadenaMessageMethod } from '@/providers/kadena/types';
+import { MessageMethod as TolarMessageMethod } from '@/providers/tolar/types';
 import { BaseNetwork } from '@/types/base-network';
 import { InternalMethods } from '@/types/messenger';
 import { EnkryptAccount, NetworkNames } from '@enkryptcom/types';
@@ -279,7 +280,7 @@ const updateGradient = (newGradient: string) => {
       `radial-gradient(137.35% 97% at 100% 50%, rgba(250, 250, 250, 0.94) 0%, rgba(250, 250, 250, 0.96) 28.91%, rgba(250, 250, 250, 0.98) 100%), linear-gradient(180deg, ${newGradient} 80%, #684CFF 100%)`;
 };
 const setNetwork = async (network: BaseNetwork) => {
-  console.error(`!-- Set network called--!`);
+  //console.error(`!-- Set network called--!`);
   trackNetworkSelected(NetworkChangeEvents.NetworkChangePopup, {
     provider: network.provider,
     network: network.name,
@@ -347,6 +348,36 @@ const setNetwork = async (network: BaseNetwork) => {
         params: [
           {
             method: KadenaMessageMethod.changeNetwork,
+            params: [currentNetwork.value.name],
+          },
+        ],
+      }),
+      provider: currentNetwork.value.provider,
+      tabId,
+    });
+  }
+
+  if (
+    curSavedNetwork !== network.name &&
+    currentNetwork.value.provider === ProviderName.tolar
+  ) {
+    //console.error("!-- TOLAR App sending enkrypt_changeNetwork --!");
+    await sendToBackgroundFromAction({
+      message: JSON.stringify({
+        method: InternalMethods.changeNetwork,
+        params: [currentNetwork.value.name],
+      }),
+      provider: currentNetwork.value.provider,
+      tabId,
+    });
+
+    //console.error("!-- TOLAR App sending TolarMessageMethod changeNetwork --!");
+    await sendToBackgroundFromAction({
+      message: JSON.stringify({
+        method: InternalMethods.sendToTab,
+        params: [
+          {
+            method: TolarMessageMethod.changeNetwork,
             params: [currentNetwork.value.name],
           },
         ],

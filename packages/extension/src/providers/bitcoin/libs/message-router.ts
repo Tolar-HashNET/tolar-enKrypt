@@ -31,6 +31,11 @@ const handleIncomingMessage: handleIncomingMessageType = (
       (jsonMsg.method as EnkryptProviderEventMethods) ===
       EnkryptProviderEventMethods.chainChanged
     ) {
+      console.error(
+        `BTC handleIncomingMessage::chainChanged jsonMsg: ${JSON.stringify(
+          jsonMsg
+        )}`
+      );
       if (
         jsonMsg.params[0] === NetworkNames.Bitcoin ||
         jsonMsg.params[0] === NetworkNames.BitcoinTest

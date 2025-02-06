@@ -2,22 +2,26 @@
   <common-popup>
     <template #header>
       <sign-logo class="common-popup__logo" />
-      <div class="common-popup__network">
-        <img :src="network.icon" />
-        <p>{{ network.name_long }}</p>
-      </div>
     </template>
 
     <template #content>
       <h2>Sign message</h2>
-
+      <hardware-wallet-msg :wallet-type="account.walletType" />
       <div class="common-popup__block">
         <div class="common-popup__account">
-          <img :src="network.identicon(account.address)" />
+          <img :src="identicon" />
           <div class="common-popup__account-info">
             <h4>{{ account.name }}</h4>
             <p>
-              {{ $filters.replaceWithEllipsis(account.address, 6, 4) }}
+              {{
+                $filters.replaceWithEllipsis(
+                  account.address
+                    ? network.displayAddress(account.address)
+                    : '',
+                  6,
+                  4,
+                )
+              }}
             </p>
           </div>
         </div>
@@ -26,7 +30,8 @@
         <div class="common-popup__info">
           <img :src="Options.faviconURL" />
           <div class="common-popup__info-info">
-            <h4>{{ Options.domain }}</h4>
+            <h4>{{ Options.title }}</h4>
+            <p>{{ Options.domain }}</p>
           </div>
         </div>
 
@@ -41,75 +46,79 @@
     </template>
 
     <template #button-right>
-      <base-button title="Sign" :click="approve" />
+      <base-button title="Sign" :click="approve" :disabled="isProcessing" />
     </template>
   </common-popup>
 </template>
 
 <script setup lang="ts">
-import { blake2AsU8a } from "@polkadot/util-crypto";
-import { bufferToHex } from "@enkryptcom/utils";
-import SignLogo from "@action/icons/common/sign-logo.vue";
-import BaseButton from "@action/components/base-button/index.vue";
-import CommonPopup from "@action/views/common-popup/index.vue";
-import { getError } from "@/libs/error";
-import { ErrorCodes } from "@/providers/ethereum/types";
-import { WindowPromiseHandler } from "@/libs/window-promise";
-import { onBeforeMount, ref } from "vue";
-import { ProviderRequestOptions } from "@/types/provider";
-import { EnkryptAccount } from "@enkryptcom/types";
-import { TransactionSigner } from "./libs/signer";
-import { TolarNetwork } from "../types/tolar-network";
-import { DEFAULT_TOLAR_NETWORK, getNetworkByName } from "@/libs/utils/networks";
+import SignLogo from '@action/icons/common/sign-logo.vue';
+import BaseButton from '@action/components/base-button/index.vue';
+import CommonPopup from '@action/views/common-popup/index.vue';
+import { getError } from '@/libs/error';
+import { ErrorCodes } from '@/providers/ethereum/types';
+import { WindowPromiseHandler } from '@/libs/window-promise';
+import { onBeforeMount, ref } from 'vue';
+import { DEFAULT_TOLAR_NETWORK, getNetworkByName} from '@/libs/utils/networks';
+import { ProviderRequestOptions } from '@/types/provider';
+import { TolarNetwork } from '../types/tolar-network';
+import { EnkryptAccount } from '@enkryptcom/types';
+import { TolarSigner } from './libs/signer';
+import { getRTLOLTLOSafeString } from '@/libs/utils/unicode-detection';
 
-const windowPromise = WindowPromiseHandler(0);
+const windowPromise = WindowPromiseHandler(3);
 const network = ref<TolarNetwork>(DEFAULT_TOLAR_NETWORK);
+const account = ref<EnkryptAccount>({
+  name: '',
+  address: '',
+} as EnkryptAccount);
 
+const identicon = ref<string>('');
 const Options = ref<ProviderRequestOptions>({
-  domain: "",
-  faviconURL: "",
-  title: "",
-  url: "",
+  domain: '',
+  faviconURL: '',
+  title: '',
+  url: '',
   tabId: 0,
 });
-const message = ref("");
-const account = ref({ address: "" } as EnkryptAccount);
+
+const message = ref<string>('');
+const type = ref<string>('');
+const isProcessing = ref(false);
 
 onBeforeMount(async () => {
+  //console.error("!-- TOL SIGN MESSAGE --!");
+
   const { Request, options } = await windowPromise;
-  Options.value = options;
-  message.value = Request.value.params![0].data;
-  account.value = Request.value.params![1] as EnkryptAccount;
   network.value = (await getNetworkByName(
-    Request.value.params![0].network
+    Request.value.params![2],
   )) as TolarNetwork;
+  account.value = Request.value.params![1] as EnkryptAccount;
+  identicon.value = network.value.identicon(account.value.address);
+  Options.value = options;
+  message.value = getRTLOLTLOSafeString(Request.value.params![0]);
+  type.value = Request.value.params![1];
 });
 
 const approve = async () => {
   const { Request, Resolve } = await windowPromise;
+  const requestMessage = Request.value.params![0] as string;
+  isProcessing.value = true;
 
-  const msg = Request.value.params![0];
-  const account = Request.value.params![1] as EnkryptAccount;
-
-  TransactionSigner({
-    account,
-    network: network.value,
-    payload: bufferToHex(blake2AsU8a(msg.data)),
-  })
-    .then((res) => {
-      Resolve.value({
-        result: res.result?.replace("0x", "") as string,
-      });
-    })
-    .catch((er) => {
-      Resolve.value({
-        error: getError(er),
-      });
+  try {
+    const signedMessage = await TolarSigner({
+      account: account.value,
+      payload: requestMessage,
     });
+
+    Resolve.value({result: JSON.stringify(signedMessage)});
+  } catch (e: any) {
+    Resolve.value(e);
+  }
 };
+
 const deny = async () => {
   const { Resolve } = await windowPromise;
-
   Resolve.value({
     error: getError(ErrorCodes.userRejected),
   });
@@ -117,5 +126,5 @@ const deny = async () => {
 </script>
 
 <style lang="less" scoped>
-@import "~@/providers/ethereum/ui/styles/common-popup.less";
+@import '@/providers/ethereum/ui/styles/common-popup.less';
 </style>

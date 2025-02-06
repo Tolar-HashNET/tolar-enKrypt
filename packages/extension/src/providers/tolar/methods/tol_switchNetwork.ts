@@ -14,9 +14,6 @@ const method: MiddlewareFunction = async function (
   res,
   next
 ): Promise<void> {
-  console.error(
-    `!-- Tolar:tol_switchNetwork payload: ${JSON.stringify(payload)} --!`
-  );
   if (payload.method !== "tol_switchNetwork") {
     return next();
   }
@@ -24,8 +21,6 @@ const method: MiddlewareFunction = async function (
   if (!payload.params || payload.params.length < 1) {
     return res(getCustomError("tol_switchNetwork: invalid params"));
   }
-
-  // !Object.values(TolarNetworks).includes(payload.params[0])
 
   const validNetwork = findTolarNetwork(payload.params![0]);
   if (validNetwork) {

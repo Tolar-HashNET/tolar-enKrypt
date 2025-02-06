@@ -102,16 +102,11 @@ import { SendEventType } from "@/libs/metrics/types";
 import { logError } from "@/providers/tolar/libs/utils";
 import {
   TolAddress,
-  TolHash,
   TolPublicKey,
   TolTxBody,
 } from "@tolar/web3-plugin-tolar";
-import { utils } from "web3";
-import { TransactionSigner } from "@/providers/tolar/ui/libs/signer";
-import { proto } from "@tolar/web3-plugin-tolar";
-import { converters } from "@tolar/web3-plugin-tolar";
+import { sendRawTransaction } from "@/providers/tolar/ui/libs/signer";
 import ActivityState from "@/libs/activity-state";
-import { retryAsync } from "ts-retry";
 
 const isSendDone = ref(false);
 const account = ref<EnkryptAccount>();
@@ -132,7 +127,7 @@ defineExpose({ verifyScrollRef });
 const network = ref<BaseNetwork>(DEFAULT_TOLAR_NETWORK);
 
 onBeforeMount(async () => {
-  console.error("!-- Tolar verify-transaction called --!");
+  //console.error("!-- Tolar verify-transaction called --!");
 
   network.value = (await getNetworkByName(selectedNetwork))!;
   trackSendEvents(SendEventType.SendVerify, { network: network.value.name });
@@ -155,11 +150,6 @@ const close = () => {
     window.close();
   }
 };
-
-function calculateTxBodyHash(protoTx: proto.Transaction): string {
-  const rawTxBody = proto.Transaction.toBinary(protoTx);
-  return TolHash.fromData(rawTxBody).hexStr;
-}
 
 const sendAction = async () => {
   const tolarNetwork = network.value as TolarNetwork;
@@ -203,55 +193,11 @@ const sendAction = async () => {
       21000n,
       1n,
       "",
-      nonce,
+      BigInt(nonce),
       tolarNetwork.networkId
     );
-    const protoTxBody = tolTxBody.toProto();
-    const txBodyHash = calculateTxBodyHash(protoTxBody);
 
-    const signature = await TransactionSigner({
-      payload: txBodyHash,
-      account: account.value!,
-    });
-
-    const protoSignatureData = proto.SignatureData.create({
-      hash: converters.encodeToProto(txBodyHash),
-      signature: converters.encodeToProto(signature),
-      signerId: signerId.encodeProto(),
-    });
-
-    console.log(
-      "signerId from proto: ",
-      TolPublicKey.fromProto(protoSignatureData.signerId).hexStr
-    );
-
-    const protoSignedTx = proto.SignedTransaction.create({
-      body: protoTxBody,
-      sigData: protoSignatureData,
-    });
-
-    const rawSignedTx = utils.bytesToHex(
-      proto.SignedTransaction.toBinary(protoSignedTx)
-    );
-
-    console.log(`!-- fromAddress: ${sender.hexStr} --!`);
-    console.log(`!-- toAddress: ${txData.toAddress} --!`);
-    console.log(`!-- account.address: ${account.value!.address} --!`);
-    console.log(`!-- account.publicKey: ${account.value!.publicKey} --!`);
-    console.log(`!-- signature: ${signature} --!`);
-    console.log(`!-- txBodyHash: ${txBodyHash} --!`);
-
-    console.log(`txData.fromAddress.: ${txData.fromAddress}`);
-    console.log(`public key sender.hexStr: ${sender.hexStr} --!`);
-    console.log(`account.value!.address: ${account.value!.address} --!`);
-
-    txHash = await tolarAPI.sendSignedTransaction(rawSignedTx);
-
-    await retryAsync(async () => tolarAPI.getTransactionStatus(txHash), {
-      delay: 1000,
-      maxTry: 15,
-      until: (lastResult) => lastResult !== null,
-    });
+    txHash = await sendRawTransaction(tolTxBody, account.value!, tolarAPI);
   } catch (e: unknown) {
     const error = logError(e);
 

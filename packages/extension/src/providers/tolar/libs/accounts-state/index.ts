@@ -32,8 +32,7 @@ class AccountState {
 
   async getApprovedAddresses(domain: string): Promise<string[]> {
     const state = await this.getStateByDomain(domain);
-    if (state.approvedAccounts) return state.approvedAccounts;
-    return [];
+    return state.approvedAccounts ? state.approvedAccounts : [];
   }
 
   async deleteState(domain: string): Promise<void> {

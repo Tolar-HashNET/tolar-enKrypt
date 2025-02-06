@@ -4,19 +4,14 @@ export default {
     component: {},
     name: "tolAccountsDapp",
   },
+  tolSendRawTransaction: {
+    path: "tol-verify-transaction",
+    component: {},
+    name: "tolSendRawTransaction",
+  },
   tolSignMessage: {
     path: "tol-sign-message",
     component: {},
     name: "tolSignMessage",
-  },
-  tolSendRawTransaction: {
-    path: "tol-send-raw-transaction",
-    component: {},
-    name: "tolSendRawTransaction",
-  },
-  tolHWVerify: {
-    path: "tol-hw-verify",
-    name: "tolHWVerify",
-    component: {},
   },
 };

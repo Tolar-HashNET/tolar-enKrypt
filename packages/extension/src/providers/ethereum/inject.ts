@@ -46,7 +46,7 @@ export class Provider extends EventEmitter implements ProviderInterface {
     this.sendMessageHandler = options.sendMessageHandler;
   }
   async request(request: EthereumRequest): Promise<EthereumResponse> {
-    console.error(`!-- Ethereum Inject Provider REQUEST called request: ${JSON.stringify(request)} --!`);
+    //console.error(`!-- Ethereum Inject Provider REQUEST called request: ${JSON.stringify(request)} --!`);
     if (this.chainId === null) {
       await this.sendMessageHandler(
         this.name,
@@ -108,9 +108,9 @@ export class Provider extends EventEmitter implements ProviderInterface {
       .catch(err => callback(err));
   }
   handleMessage(msg: string): void {
-    console.error(
-      `!-- Ethereum Inject Provider HANDEL_MESSAGE called msg: ${msg} --!`
-    );
+    // console.error(
+    //   `!-- Ethereum Inject Provider HANDEL_MESSAGE called msg: ${msg} --!`
+    // );
     handleIncomingMessage(this, msg);
   }
 }
