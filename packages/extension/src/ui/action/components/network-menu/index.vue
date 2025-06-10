@@ -1,18 +1,18 @@
 <template>
   <div class="network-menu">
     <router-link
-      v-if="network"
-      :to="{ name: 'assets', params: { id: !!selected ? selected : null } }"
-    >
-      <Assets /><br />Assets
-    </router-link>
-    <router-link
       :to="{
         name: 'activity',
         params: { id: !!selected ? selected : null },
       }"
     >
       <Activity /><br />Activity
+    </router-link>
+    <router-link
+      v-if="network"
+      :to="{ name: 'assets', params: { id: !!selected ? selected : null } }"
+    >
+      <Assets /><br />Assets
     </router-link>
     <router-link
       v-if="(network as EvmNetwork).NFTHandler"

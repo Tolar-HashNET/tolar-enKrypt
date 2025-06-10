@@ -29,9 +29,7 @@ class TolarProvider
     toWindow: (message: string) => void,
     network: TolarNetwork = Networks.tolarMainnetNetwork
   ) {
-    //console.error("!-- PRE TolarProvider constructor called --!");
     super();
-    //console.error("!-- TolarProvider constructor called --!");
     this.network = network;
     this.toWindow = toWindow;
     this.setMiddleWares();
@@ -47,14 +45,10 @@ class TolarProvider
   }
 
   private setMiddleWares(): void {
-    //console.error("!-- TolarProvider setMiddleWares called --!");
     this.middlewares = Middlewares.map((mw) => mw.bind(this));
   }
 
   setRequestProvider(network: BaseNetwork): void {
-    // console.error(
-    //   `!-- TolarProvider setRequestProvider called network: ${network.name} --!`
-    // );
     this.network = network as TolarNetwork;
     this.requestProvider.changeNetwork(network.node);
   }
@@ -64,22 +58,10 @@ class TolarProvider
   }
 
   async sendNotification(notif: string): Promise<void> {
-    // console.error(
-    //   `!-- TolarProvider:sendNotification called notif: ${JSON.stringify(
-    //     notif
-    //   )} NETWORK: ${this.network.name} --!`
-    // );
-
     return this.toWindow(notif);
   }
 
   request(request: ProviderRPCRequest): Promise<OnMessageResponse> {
-    // console.error(
-    //   `!-- TolarProvider:request called request: ${JSON.stringify(
-    //     request
-    //   )}; NETWORK: ${this.network.name} --!`
-    // );
-
     return this.requestProvider
       .request(request)
       .then((res: any) => {

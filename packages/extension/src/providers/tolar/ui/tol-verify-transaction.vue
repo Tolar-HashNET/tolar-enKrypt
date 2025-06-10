@@ -122,6 +122,9 @@ import { SendEventType } from '@/libs/metrics/types';
 import TolarAPI from "@/providers/tolar/libs/api";
 import { RpcTxRequest, TolTxBody } from "@tolar/web3-plugin-tolar";
 import {JsonTreeView} from "@/libs/json-tree-view";
+import ActivityState from "@/libs/activity-state";
+import {Activity, ActivityStatus, ActivityType} from "@/types/activity.ts";
+import {TolarToken} from "@/providers/tolar/types/tolar-token.ts";
 
 const isProcessing = ref(false);
 const providerVerifyTransactionScrollRef = ref<ComponentPublicInstance>();
@@ -155,9 +158,6 @@ defineExpose({ providerVerifyTransactionScrollRef });
 
 onBeforeMount(async () => {
   const { Request, options } = await windowPromise;
-
-  //console.error("!-- Opening tol verify tx --!");
-
   try {
     network.value = (await getNetworkByName(
       Request.value.params![2],
@@ -208,15 +208,54 @@ const approve = async () => {
 
   const { Resolve } = await windowPromise;
   const tolarAPI = (await network.value.api()) as TolarAPI;
+  const tolTxBody: TolTxBody = tx.value!;
+
+  const networkAssets = await network.value.getAllTokens(tolTxBody.senderAddress.hexStr);
+  const networkAsset = networkAssets[0] as TolarToken;
+
+  const activityState = new ActivityState();
+  const txActivity: Activity = {
+    from: tolTxBody.senderAddress.hexStr,
+    to: tolTxBody.receiverAddress.hexStr,
+    isIncoming: tolTxBody.senderAddress.hexStr === tolTxBody.receiverAddress.hexStr,
+    network: network.value.name,
+    status: ActivityStatus.pending,
+    timestamp: new Date().getTime(),
+    token: {
+      decimals: networkAsset.decimals,
+      icon: networkAsset.icon,
+      name: networkAsset.name,
+      symbol: networkAsset.symbol,
+      price: networkAsset.price,
+    },
+    type: ActivityType.transaction,
+    value: tolTxBody.value.toString(),
+    transactionHash: "",
+  };
 
   try {
-    const txHash = await sendRawTransaction(tx.value!, account.value!, tolarAPI);
+    const txHash = await sendRawTransaction(tolTxBody, account.value!, tolarAPI);
 
     trackSendEvents(SendEventType.SendAPIComplete, {
       network: network.value.name,
     });
+
+    await activityState.addActivities(
+      [{ ...txActivity, ...{ transactionHash: txHash } }],
+      {
+        address: tolTxBody.senderAddress.hexStr,
+        network: network.value.name,
+      }
+    );
+
     Resolve.value({result: JSON.stringify(txHash)});
   } catch (e : any) {
+    txActivity.status = ActivityStatus.failed;
+    await activityState.addActivities([txActivity], {
+      address: tolTxBody.senderAddress.hexStr,
+      network: network.value.name,
+    });
+
     trackSendEvents(SendEventType.SendAPIComplete, {
       network: network.value.name,
       error: e.error,

@@ -64,16 +64,20 @@ import NetworkActivityAction from '../network-activity/components/network-activi
 import NetworkAssetsItem from './components/network-assets-item.vue';
 import NetworkAssetsLoading from './components/network-assets-loading.vue';
 import CustomScrollbar from '@action/components/custom-scrollbar/index.vue';
-import { computed, onMounted, type PropType, ref, toRef, watch } from 'vue';
+import {computed, onMounted, onUnmounted, type PropType, ref, watch} from 'vue';
 import type { AssetsType } from '@/types/provider';
 import type { AccountsHeaderData } from '../../types/account';
-import accountInfoComposable from '@action/composables/account-info';
 import { BaseNetwork } from '@/types/base-network';
 import scrollSettings from '@/libs/utils/scroll-settings';
 import Deposit from '@action/views/deposit/index.vue';
 import BaseButton from '@action/components/base-button/index.vue';
 import CustomEvmToken from './components/custom-evm-token.vue';
 import { EvmNetwork } from '@/providers/ethereum/types/evm-network';
+import { getCryptoAmount, getFiatAmount } from "@action/utils/amount-calc.ts";
+import { fromBase } from '@enkryptcom/utils';
+import { isEqual } from "lodash";
+
+let updateAssetsTimer: ReturnType<typeof setInterval> | null = null;
 
 const showDeposit = ref(false);
 
@@ -94,25 +98,42 @@ const props = defineProps({
 });
 const assets = ref<AssetsType[]>([]);
 const isLoading = ref(false);
+const cryptoAmount = ref<string>('0.00');
+const fiatAmount = ref<string>('~');
 
-const { cryptoAmount, fiatAmount } = accountInfoComposable(
-  toRef(props, 'network'),
-  toRef(props, 'accountInfo'),
-);
 const selected: string = route.params.id as string;
 
-const updateAssets = () => {
+const updateAmounts = async (balance: string, network: BaseNetwork) => {
+  const normalizedBalance = fromBase(balance, props.network.decimals)
+  const formatedBalance = getCryptoAmount(normalizedBalance);
+
+  if(formatedBalance !== cryptoAmount.value) {
+    cryptoAmount.value = formatedBalance;
+    fiatAmount.value = await getFiatAmount(normalizedBalance, network);
+  }
+}
+
+const updateAssets = async () => {
   isLoading.value = true;
-  assets.value = [];
-  const currentNetwork = selectedNetworkName.value;
-  props.network
-    .getAllTokenInfo(props.accountInfo.selectedAccount?.address || '')
-    .then(_assets => {
-      if (selectedNetworkName.value !== currentNetwork) return;
-      assets.value = _assets;
+
+  try {
+    const _assets = await props.network.getAllTokenInfo(props.accountInfo.selectedAccount?.address || '');
+    if(isEqual(_assets, assets.value)) {
       isLoading.value = false;
-    });
+      return;
+    }
+
+    assets.value = _assets;
+    isLoading.value = false;
+
+    if(_assets.length > 0) {
+      await updateAmounts(_assets[0].balance, props.network);
+    }
+  } catch (e) {
+    console.error(e);
+  }
 };
+
 const selectedAddress = computed(
   () => props.accountInfo.selectedAccount?.address || '',
 );
@@ -123,6 +144,14 @@ const showAddCustomTokens = ref(false);
 watch([selectedAddress, selectedNetworkName, selectedSubnetwork], updateAssets);
 onMounted(() => {
   updateAssets();
+
+  updateAssetsTimer = setInterval(updateAssets, 30_000);
+});
+
+onUnmounted(() => {
+  if(updateAssetsTimer !== null) {
+    clearInterval(updateAssetsTimer);
+  }
 });
 
 const toggleDeposit = () => {

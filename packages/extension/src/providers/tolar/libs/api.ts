@@ -13,8 +13,6 @@ class API implements ProviderAPIInterface {
   private readonly web3: Web3;
 
   constructor(node: string) {
-    //console.error(`!-- Tolar::API:constructor called node: ${node} --!`);
-
     this.node = node;
 
     this.web3 = new Web3(this.node);
@@ -50,7 +48,7 @@ class API implements ProviderAPIInterface {
 
   async getNonce(address: string): Promise<TolNum> {
     const nonce = await this.web3.tolar.getNonce(address);
-    return BigInt(nonce) === INVALID_NONCE ? "0" : nonce;
+    return nonce === INVALID_NONCE ? "0" : nonce;
   }
 
   public async sendSignedTransaction(

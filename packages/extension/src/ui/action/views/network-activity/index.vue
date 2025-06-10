@@ -77,6 +77,7 @@ import Swap, {
   TransactionStatus,
   WalletIdentifier,
 } from '@enkryptcom/swap';
+import {isEqual} from "lodash";
 import EvmAPI from '@/providers/ethereum/libs/api';
 import type Web3Eth from 'web3-eth';
 
@@ -118,6 +119,7 @@ apiPromise.then(api => {
 
 /** Intervals that trigger calls to check for updates in transaction activity */
 const activityCheckTimers: ReturnType<typeof setInterval>[] = [];
+const activityRefreshTimers: ReturnType<typeof setInterval>[] = [];
 
 const activityAddress = computed(() =>
   props.network.displayAddress(props.accountInfo.selectedAccount!.address),
@@ -146,6 +148,45 @@ const checkActivity = (activity: Activity): void => {
   // Register the interval timer so we can destroy it on component teardown
   activityCheckTimers.push(timer);
 };
+
+const periodicallyRefreshActivity = (): void => {
+  const timer = setInterval(async () => {
+    await loadActivity();
+  }, 30_000);
+
+  activityRefreshTimers.push(timer);
+}
+
+const loadActivity = async (): Promise<void> => {
+  if (props.accountInfo.selectedAccount) {
+    const freshActivities = await props.network.getAllActivity(activityAddress.value);
+    if (isEqual(activities.value, freshActivities)) {
+      return;
+    }
+
+    activities.value = freshActivities;
+    isNoActivity.value = freshActivities.length === 0;
+
+    activities.value.forEach(act => {
+      if (
+        (act.status === ActivityStatus.pending ||
+          act.status === ActivityStatus.dropped) &&
+        act.type === ActivityType.transaction
+      ) {
+        checkActivity(act);
+      }
+      if (
+        (act.status === ActivityStatus.pending ||
+          act.status === ActivityStatus.dropped) &&
+        act.type === ActivityType.swap
+      ) {
+        checkSwap(act);
+      }
+    });
+  } else {
+    activities.value = [];
+  }
+}
 
 const handleActivityUpdate = (activity: Activity, info: any, timer: any) => {
   if (props.network.provider === ProviderName.ethereum) {
@@ -273,32 +314,14 @@ const checkSwap = (activity: Activity): void => {
   }, 5000);
   activityCheckTimers.push(timer);
 };
+
 const selectedNetworkName = computed(() => props.network.name);
+
 const setActivities = () => {
   activities.value = [];
-  isNoActivity.value = false;
-  if (props.accountInfo.selectedAccount)
-    props.network.getAllActivity(activityAddress.value).then(all => {
-      activities.value = all;
-      isNoActivity.value = all.length === 0;
-      activities.value.forEach(act => {
-        if (
-          (act.status === ActivityStatus.pending ||
-            act.status === ActivityStatus.dropped) &&
-          act.type === ActivityType.transaction
-        ) {
-          checkActivity(act);
-        }
-        if (
-          (act.status === ActivityStatus.pending ||
-            act.status === ActivityStatus.dropped) &&
-          act.type === ActivityType.swap
-        ) {
-          checkSwap(act);
-        }
-      });
-    });
-  else activities.value = [];
+  isNoActivity.value = true;
+
+  loadActivity();
 };
 
 watch([selectedAddress, selectedNetworkName], setActivities);
@@ -306,10 +329,19 @@ onMounted(() => {
   setActivities();
   activityCheckTimers.forEach(timer => clearInterval(timer));
   activityCheckTimers.length = 0;
+
+  activityRefreshTimers.forEach(timer => clearInterval(timer));
+  activityRefreshTimers.length = 0;
+
+  periodicallyRefreshActivity();
 });
+
 onUnmounted(() => {
   activityCheckTimers.forEach(timer => clearInterval(timer));
   activityCheckTimers.length = 0;
+
+  activityRefreshTimers.forEach(timer => clearInterval(timer));
+  activityRefreshTimers.length = 0;
 });
 </script>
 

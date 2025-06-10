@@ -15,10 +15,6 @@ const method: MiddlewareFunction = async function (
     return next();
   }
 
-  // console.error(
-  //   `!-- Tolar:tol_getCurrentBalance payload: ${JSON.stringify(payload)} --!`
-  // );
-
   if (!payload.options || !payload.options.domain) {
     return res(getCustomError('tol_getCurrentBalance: Domain is missing'));
   }

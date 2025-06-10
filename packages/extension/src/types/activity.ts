@@ -6,6 +6,7 @@ import {
   StatusOptionsResponse,
 } from '@enkryptcom/swap';
 import { ICommandResult } from '@kadena/client';
+import type {RpcTxResponse} from "@tolar/web3-plugin-tolar";
 
 interface BTCIns {
   address: string;
@@ -107,6 +108,9 @@ interface SwapRawInfo {
   toToken: TokenTypeTo;
   status: StatusOptionsResponse;
 }
+
+type TolarRawInfo = RpcTxResponse;
+
 interface Activity {
   network: NetworkNames;
   from: string;
@@ -128,7 +132,8 @@ interface Activity {
   | BTCRawInfo
   | SwapRawInfo
   | KadenaRawInfo
-  | SOLRawInfo;
+  | SOLRawInfo
+  | TolarRawInfo;
 }
 
 export {

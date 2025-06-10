@@ -145,10 +145,13 @@ import { trackBuyEvents, trackNetworkSelected } from '@/libs/metrics';
 import { getLatestEnkryptVersion } from '@action/utils/browser';
 import { gt as semverGT } from 'semver';
 import { BuyEventType, NetworkChangeEvents } from '@/libs/metrics/types';
+import {isEqual} from "lodash";
 
 const domainState = new DomainState();
 const networksState = new NetworksState();
 const rateState = new RateState();
+let updateActiveBalancesTimer: ReturnType<typeof setInterval> | null = null;
+
 const appMenuRef = ref(null);
 const showDepositWindow = ref(false);
 const accountHeaderData = ref<AccountsHeaderData>({
@@ -228,8 +231,7 @@ const isKeyRingLocked = async (): Promise<boolean> => {
     tabId: await domainState.getCurrentTabId(),
   }).then(res => JSON.parse(res.result || 'true'));
 };
-const init = async () => {
-  const curNetwork = await domainState.getSelectedNetWork();
+const init = async () => {const curNetwork = await domainState.getSelectedNetWork();
   if (curNetwork) {
     const savedNetwork = await getNetworkByName(curNetwork);
     if (savedNetwork) setNetwork(savedNetwork);
@@ -240,8 +242,7 @@ const init = async () => {
   await setActiveNetworks();
   isLoading.value = false;
 };
-onMounted(async () => {
-  const isInitialized = await kr.isInitialized();
+onMounted(async () => {const isInitialized = await kr.isInitialized();
   if (isInitialized) {
     const _isLocked = await isKeyRingLocked();
     if (_isLocked) {
@@ -279,9 +280,7 @@ const updateGradient = (newGradient: string) => {
     (appMenuRef.value as HTMLElement).style.background =
       `radial-gradient(137.35% 97% at 100% 50%, rgba(250, 250, 250, 0.94) 0%, rgba(250, 250, 250, 0.96) 28.91%, rgba(250, 250, 250, 0.98) 100%), linear-gradient(180deg, ${newGradient} 80%, #684CFF 100%)`;
 };
-const setNetwork = async (network: BaseNetwork) => {
-  //console.error(`!-- Set network called--!`);
-  trackNetworkSelected(NetworkChangeEvents.NetworkChangePopup, {
+const setNetwork = async (network: BaseNetwork) => {trackNetworkSelected(NetworkChangeEvents.NetworkChangePopup, {
     provider: network.provider,
     network: network.name,
   });
@@ -307,7 +306,7 @@ const setNetwork = async (network: BaseNetwork) => {
     activeBalances: activeAccounts.map(() => '~'),
   };
   currentNetwork.value = network;
-  router.push({ name: 'assets', params: { id: network.name } });
+  router.push({ name: 'activity', params: { id: network.name } });
   const tabId = await domainState.getCurrentTabId();
   const curSavedNetwork = await domainState.getSelectedNetWork();
 
@@ -361,7 +360,6 @@ const setNetwork = async (network: BaseNetwork) => {
     curSavedNetwork !== network.name &&
     currentNetwork.value.provider === ProviderName.tolar
   ) {
-    //console.error("!-- TOLAR App sending enkrypt_changeNetwork --!");
     await sendToBackgroundFromAction({
       message: JSON.stringify({
         method: InternalMethods.changeNetwork,
@@ -371,7 +369,6 @@ const setNetwork = async (network: BaseNetwork) => {
       tabId,
     });
 
-    //console.error("!-- TOLAR App sending TolarMessageMethod changeNetwork --!");
     await sendToBackgroundFromAction({
       message: JSON.stringify({
         method: InternalMethods.sendToTab,
@@ -400,26 +397,42 @@ const setNetwork = async (network: BaseNetwork) => {
     provider: currentNetwork.value.provider,
     tabId,
   });
-  domainState.setSelectedNetwork(network.name);
 
-  if (network.api) {
+  await domainState.setSelectedNetwork(network.name);
+  await setActiveBalances(network);
+
+  if(updateActiveBalancesTimer == null) {
+    updateActiveBalancesTimer = setInterval(setActiveBalances, 30_000, network);
+  } else {
+    clearInterval(updateActiveBalancesTimer);
+    updateActiveBalancesTimer = setInterval(setActiveBalances, 30_000, network);
+  }
+};
+
+const setActiveBalances = async (network: BaseNetwork) => {
+  if(network.api) {
     try {
-      const thisNetworkName = currentNetwork.value.name;
       const api = await network.api();
-      const activeBalancePromises = activeAccounts.map(acc =>
-        api.getBalance(acc.address),
-      );
-      Promise.all(activeBalancePromises).then(balances => {
-        if (thisNetworkName === currentNetwork.value.name)
-          accountHeaderData.value.activeBalances = balances.map(bal =>
-            fromBase(bal, network.decimals),
-          );
-      });
+      const thisNetworkName = currentNetwork.value.name;
+      const activeAddresses = accountHeaderData.value.activeAccounts.map(account => account.address);
+      const decimals = network.decimals;
+      let balances = await Promise.all(activeAddresses.map(address => api.getBalance(address)));
+
+      if(thisNetworkName !== currentNetwork.value.name) {
+        return;
+      }
+
+      balances = balances.map(balance => fromBase(balance, decimals));
+      if(isEqual(balances, accountHeaderData.value.activeBalances)) {
+        return;
+      }
+
+      accountHeaderData.value.activeBalances = balances;
     } catch (e) {
       console.error(e);
     }
   }
-};
+}
 
 const onSelectedSubnetworkChange = async (id: string) => {
   await domainState.setSelectedSubNetwork(id);
@@ -427,8 +440,7 @@ const onSelectedSubnetworkChange = async (id: string) => {
   setNetwork(currentNetwork.value);
 };
 
-const onSelectedAddressChanged = async (newAccount: EnkryptAccount) => {
-  accountHeaderData.value.selectedAccount = newAccount;
+const onSelectedAddressChanged = async (newAccount: EnkryptAccount) => {accountHeaderData.value.selectedAccount = newAccount;
   const accountStates = {
     [ProviderName.ethereum]: EVMAccountState,
     [ProviderName.bitcoin]: BTCAccountState,
@@ -456,6 +468,7 @@ const onSelectedAddressChanged = async (newAccount: EnkryptAccount) => {
     tabId: await domainState.getCurrentTabId(),
   });
 };
+
 const showNetworkMenu = computed(() => {
   const selected = route.params.id as string;
   return (

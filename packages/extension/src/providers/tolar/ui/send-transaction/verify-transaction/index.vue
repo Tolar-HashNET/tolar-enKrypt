@@ -127,8 +127,6 @@ defineExpose({ verifyScrollRef });
 const network = ref<BaseNetwork>(DEFAULT_TOLAR_NETWORK);
 
 onBeforeMount(async () => {
-  //console.error("!-- Tolar verify-transaction called --!");
-
   network.value = (await getNetworkByName(selectedNetwork))!;
   trackSendEvents(SendEventType.SendVerify, { network: network.value.name });
   account.value = await KeyRing.getAccount(txData.fromAddress);

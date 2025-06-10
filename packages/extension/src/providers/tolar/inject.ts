@@ -15,9 +15,7 @@ export class Provider extends EventEmitter implements ProviderInterface {
   sendMessageHandler: SendMessageHandler;
 
   constructor(options: ProviderOptions) {
-    //console.error("!-- PRE TolarInjectProvider:constructor called --!");
     super();
-    //console.error("!-- TolarInjectProvider:constructor called --!");
     this.connected = true;
     this.name = options.name;
     this.type = options.type;
@@ -26,12 +24,6 @@ export class Provider extends EventEmitter implements ProviderInterface {
   }
 
   async request(request: EthereumRequest): Promise<EthereumResponse> {
-    // console.error(
-    //   `!-- TolarInjectProvider:request called request: ${JSON.stringify(
-    //     request
-    //   )} --!`
-    // );
-
     return (await this.sendMessageHandler(
       this.name,
       JSON.stringify(request)
@@ -43,12 +35,6 @@ export class Provider extends EventEmitter implements ProviderInterface {
   }
 
   handleMessage(msg: string): void {
-    // console.error(
-    //   `!-- TolarInjectProvider:handleMessage called msg: ${JSON.stringify(
-    //     msg
-    //   )} --!`
-    // );
-
     handleIncomingMessage(this, msg);
   }
 }

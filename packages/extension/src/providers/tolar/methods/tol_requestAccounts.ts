@@ -18,10 +18,6 @@ const method: MiddlewareFunction = async function (
   res,
   next
 ): Promise<void> {
-  // console.error(
-  //   `!-- Tolar:tol_requestAccounts payload: ${JSON.stringify(payload)} --!`
-  // );
-
   if (payload.method !== "tol_requestAccounts") {
     return next();
   }

@@ -29,7 +29,6 @@ class EthereumProvider
     network: EvmNetwork = Networks.ethereum,
   ) {
     super();
-    //console.error(`!-- EthereumProvider constructor called ${network.name} --!`);
     this.network = network;
     this.toWindow = toWindow;
     this.setMiddleWares();
@@ -41,11 +40,9 @@ class EthereumProvider
     this.KeyRing = new PublicKeyRing();
   }
   private setMiddleWares(): void {
-    //console.error("!-- EthereumProvider setMiddleWares called --!");
     this.middlewares = Middlewares.map(mw => mw.bind(this));
   }
   setRequestProvider(network: BaseNetwork): void {
-    //console.error("!-- EthereumProvider SET_REQUEST_PROVIDER called --!");
     const prevURL = new URL(this.network.node);
     const newURL = new URL(network.node);
     this.network = network as EvmNetwork;
@@ -59,17 +56,9 @@ class EthereumProvider
     return false;
   }
   async sendNotification(notif: string): Promise<void> {
-    // console.error(
-    //   `!-- EthereumProvider NOTIFICATION called notif: ${notif} --!`
-    // );
     return this.toWindow(notif);
   }
   request(request: ProviderRPCRequest): Promise<OnMessageResponse> {
-    // console.error(
-    //   `!-- EthereumProvider REQUEST called request: ${JSON.stringify(
-    //     request
-    //   )} --!`
-    // );
     return this.requestProvider
       .request(request)
       .then(res => {

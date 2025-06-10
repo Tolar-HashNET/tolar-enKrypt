@@ -22,6 +22,10 @@ export interface TolarNetworkOptions {
   isTestNetwork: boolean;
   icon: string;
   node: string;
+  activityHandler: (
+    network: BaseNetwork,
+    address: string,
+  ) => Promise<Activity[]>;
 }
 
 class ApiCache {
@@ -44,6 +48,11 @@ const API_CACHE = new ApiCache();
 
 export class TolarNetwork extends BaseNetwork {
   public readonly networkId: number;
+
+  private activityHandler: (
+    network: BaseNetwork,
+    address: string,
+  ) => Promise<Activity[]>;
 
   constructor(options: TolarNetworkOptions) {
     const api = async () => {
@@ -68,6 +77,7 @@ export class TolarNetwork extends BaseNetwork {
 
     super(baseOptions);
     this.networkId = options.networkId;
+    this.activityHandler = options.activityHandler;
   }
 
   public async getAllTokens(address: string): Promise<BaseToken[]> {
@@ -119,8 +129,7 @@ export class TolarNetwork extends BaseNetwork {
     return [];
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public getAllActivity(address: string): Promise<Activity[]> {
-    return Promise.resolve([]);
+    return this.activityHandler(this, address);
   }
 }

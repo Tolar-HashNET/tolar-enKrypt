@@ -17,10 +17,6 @@ const sendToTab = (
     actionMsg.tabId &&
     tabProviders[actionMsg.provider][actionMsg.tabId]
   ) {
-    // console.error(
-    //   `!-- sendToTab called, message: ${JSON.stringify(actionMsg)}--!`
-    // );
-
     tabProviders[actionMsg.provider][actionMsg.tabId].sendNotification(
       JSON.stringify(message.params?.length ? message.params[0] : {}),
     );

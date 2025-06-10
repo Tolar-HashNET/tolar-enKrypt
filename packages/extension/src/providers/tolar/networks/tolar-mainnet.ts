@@ -2,6 +2,8 @@ import { NetworkNames } from "@enkryptcom/types";
 import { TolarNetwork, TolarNetworkOptions } from "../types/tolar-network";
 import { NetworkId } from "@tolar/web3-plugin-tolar";
 import icon from './icons/tolar-mainnet.png';
+import {tolarScanActivity} from '../libs/activity-handlers';
+import {TolarRpcEndpoints} from "@/providers/tolar/types";
 
 const tolarMainnetOptions: TolarNetworkOptions = {
   networkId: NetworkId.Mainnet,
@@ -11,7 +13,8 @@ const tolarMainnetOptions: TolarNetworkOptions = {
   blockExplorerAddr: "https://blockscout.tolar.io/address/[[address]]",
   isTestNetwork: false,
   icon,
-  node: "https://jsongw.mainnet.tolar.io/jsonrpc",
+  node: TolarRpcEndpoints.get(NetworkId.Mainnet)!,
+  activityHandler: tolarScanActivity,
 };
 
 const tolarMainnetNetwork = new TolarNetwork(tolarMainnetOptions);

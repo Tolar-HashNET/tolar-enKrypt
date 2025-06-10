@@ -17,9 +17,6 @@ const handleIncomingMessage: handleIncomingMessageType = (
   message,
 ): void => {
   try {
-    // console.error(
-    //   `!-- Ethereum Inject Provider HANDEL_INCOMING_MESSAGE called message: ${message} --!`
-    // );
     const _provider = provider as EthereumProvider;
     const jsonMsg = JSON.parse(message) as ProviderMessage;
     if (jsonMsg.method === MessageMethod.changeConnected) {

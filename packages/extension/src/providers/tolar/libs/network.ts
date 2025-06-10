@@ -3,7 +3,6 @@ import { TolarNetwork } from "@/providers/tolar/types/tolar-network";
 import { NetworkInfo } from "@tolar/web3-plugin-tolar";
 
 export const getNetworkInfo = (networkName: string) : NetworkInfo => {
-  //console.error(`Tolar::getNetworkInfo called networkName: ${networkName}`);
   const networkObject = Object.values(AllTolarNetworks).find(
     (n) => n.name === networkName
   );
@@ -18,7 +17,6 @@ export const getNetworkInfo = (networkName: string) : NetworkInfo => {
 export const findTolarNetwork = (
   network: string | number
 ): TolarNetwork | undefined => {
-  //console.error(`Tolar::findTolarNetwork called network: ${network}`);
   const allNetworks = Object.values(AllTolarNetworks);
 
   let searchPredicate;

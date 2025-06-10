@@ -87,8 +87,6 @@ const type = ref<string>('');
 const isProcessing = ref(false);
 
 onBeforeMount(async () => {
-  //console.error("!-- TOL SIGN MESSAGE --!");
-
   const { Request, options } = await windowPromise;
   network.value = (await getNetworkByName(
     Request.value.params![2],
