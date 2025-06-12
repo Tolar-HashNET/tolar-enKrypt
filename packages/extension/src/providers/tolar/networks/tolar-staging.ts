@@ -8,10 +8,10 @@ import {TolarRpcEndpoints} from "@/providers/tolar/types";
 const tolarStagingOptions: TolarNetworkOptions = {
   networkId: NetworkId.Stagenet,
   name: NetworkNames.TolarStaging,
-  name_long: "Tolar Staging",
+  name_long: "Staging",
   blockExplorerTX: "https://blockscout.staging.tolar.io/tx/[[txHash]]",
   blockExplorerAddr: "https://blockscout.staging.tolar.io/address/[[address]]",
-  isTestNetwork: false,
+  isTestNetwork: true,
   icon,
   node: TolarRpcEndpoints.get(NetworkId.Stagenet)!,
   activityHandler: tolarScanActivity,

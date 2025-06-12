@@ -8,7 +8,7 @@ import {TolarRpcEndpoints} from "@/providers/tolar/types";
 const tolarLocalOptions: TolarNetworkOptions = {
   networkId: NetworkId.Local,
   name: NetworkNames.TolarLocal,
-  name_long: "Tolar Local",
+  name_long: "Local",
   blockExplorerTX: "https://127.0.0.1:8081/tx/[[txHash]]",
   blockExplorerAddr: "https://127.0.0.1:8081/address/[[address]]",
   isTestNetwork: true,

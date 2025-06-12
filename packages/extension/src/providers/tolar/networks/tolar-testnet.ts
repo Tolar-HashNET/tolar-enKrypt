@@ -8,7 +8,7 @@ import {TolarRpcEndpoints} from "@/providers/tolar/types";
 const tolarTestnetOptions: TolarNetworkOptions = {
   networkId: NetworkId.Testnet,
   name: NetworkNames.TolarTestnet,
-  name_long: "Tolar Testnet",
+  name_long: "Testnet",
   blockExplorerTX: "https://blockscout.testnet.tolar.io/tx/[[txHash]]",
   blockExplorerAddr: "https://blockscout.testnet.tolar.io/address/[[address]]",
   isTestNetwork: true,
