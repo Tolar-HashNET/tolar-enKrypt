@@ -75,6 +75,7 @@
         :fee-amount="feeAmount"
         :show-max="true"
         :has-enough-balance="fieldsValidation.feeAmount"
+        :currency-name="network.currencyName"
         @update:input-fee-amount="inputFeeAmount"
       />
 
@@ -227,7 +228,7 @@ const validateFields = async () => {
       if (feeAtto < 21000n) {
         fieldsValidation.value.feeAmount = false;
         errorMsg.value =
-          "Fee amount must be greater than or equal to 21000 attoTOL";
+          `Fee amount must be greater than or equal to 21000 atto${props.network.currencyName}`;
         return;
       }
     }

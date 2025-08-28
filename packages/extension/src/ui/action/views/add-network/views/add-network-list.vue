@@ -42,7 +42,7 @@
         :network="item"
         :is-active="item.isActive"
         :is-custom-network="
-          (item as unknown as CustomEvmNetwork).isCustomNetwork
+          (item as unknown as CustomTolarNetwork).isCustomNetwork
         "
         :show-tooltip="!hasMoreThanOneActiveNetwork"
         @network-toggled="onToggle"
@@ -63,8 +63,8 @@ import { getAllNetworks, POPULAR_NAMES } from '@/libs/utils/networks';
 import NetworksState from '@/libs/networks-state';
 import scrollSettings from '@/libs/utils/scroll-settings';
 import { computed } from 'vue';
-import { CustomEvmNetwork } from '@/providers/ethereum/types/custom-evm-network';
 import CustomNetworksState from '@/libs/custom-networks-state';
+import {CustomTolarNetwork} from "@/providers/tolar/networks/custom-tolar-network.ts";
 
 interface NodeTypesWithActive extends NodeType {
   isActive: boolean;
@@ -163,9 +163,9 @@ const onToggle = async (networkName: string, isActive: boolean) => {
   }
 };
 
-const onNetworkDeleted = async (chainId: string) => {
+const onNetworkDeleted = async (networkId: number) => {
   const customNetworksState = new CustomNetworksState();
-  await customNetworksState.deleteEVMNetwork(chainId);
+  await customNetworksState.deleteNetwork(networkId);
 
   all.value = await getAllNetworksAndStatus();
   hasMoreThanOneActiveNetwork.value =

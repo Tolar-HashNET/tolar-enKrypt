@@ -1,7 +1,7 @@
-import { CustomEvmNetworkOptions } from '@/providers/ethereum/types/custom-evm-network';
 import { InternalStorageNamespace } from '@/types/provider';
 import BrowserStorage from '../common/browser-storage';
 import { IState, StorageKeys } from './types';
+import {CustomNetworkOptions} from "@/providers/common/types";
 
 export default class CustomNetworksState {
   private storage: BrowserStorage;
@@ -12,40 +12,41 @@ export default class CustomNetworksState {
     );
   }
 
-  async addCustomNetwork(options: CustomEvmNetworkOptions): Promise<string> {
+  async addCustomNetwork(options: CustomNetworkOptions): Promise<string> {
+    console.error("Adding custom network: ", options);
     const state: IState = await this.storage.get(
       StorageKeys.customNetworksInfo,
     );
     options.name = `custom-${options.name}`;
-    if (state && state.customEvmNetworks) {
-      const networkExists = state.customEvmNetworks.find(
-        net => net.chainID === options.chainID,
+    if (state && state.customNetworks) {
+      const networkExists = state.customNetworks.find(
+        net => net.networkId === options.networkId,
       );
 
       if (networkExists) {
         return networkExists.name;
       }
-      state.customEvmNetworks.push(options);
+      state.customNetworks.push(options);
       await this.storage.set(StorageKeys.customNetworksInfo, state);
     } else {
       const newState: IState = {
-        customEvmNetworks: [options],
+        customNetworks: [options],
       };
       await this.storage.set(StorageKeys.customNetworksInfo, newState);
     }
     return options.name;
   }
 
-  async getCustomEVMNetwork(
-    chainId: `0x${string}`,
-  ): Promise<CustomEvmNetworkOptions | null> {
+  async getCustomNetwork(
+    networkId: number,
+  ): Promise<CustomNetworkOptions | null> {
     const state: IState = await this.storage.get(
       StorageKeys.customNetworksInfo,
     );
 
-    if (state && state.customEvmNetworks) {
-      const networkOptions = state.customEvmNetworks.find(
-        option => option.chainID === chainId,
+    if (state && state.customNetworks) {
+      const networkOptions = state.customNetworks.find(
+        option => option.networkId === networkId,
       );
 
       if (networkOptions) {
@@ -56,26 +57,26 @@ export default class CustomNetworksState {
     return null;
   }
 
-  async getAllCustomEVMNetworks(): Promise<CustomEvmNetworkOptions[]> {
+  async getAllCustomNetworks(): Promise<CustomNetworkOptions[]> {
     const state: IState = await this.storage.get(
       StorageKeys.customNetworksInfo,
     );
 
-    if (state && state.customEvmNetworks) {
-      return state.customEvmNetworks;
+    if (state && state.customNetworks) {
+      return state.customNetworks;
     }
 
     return [];
   }
 
-  async deleteEVMNetwork(chainID: string): Promise<void> {
+  async deleteNetwork(networkId: number): Promise<void> {
     const state: IState = await this.storage.get(
       StorageKeys.customNetworksInfo,
     );
 
-    if (state && state.customEvmNetworks) {
-      state.customEvmNetworks = state.customEvmNetworks.filter(
-        net => net.chainID !== chainID,
+    if (state && state.customNetworks) {
+      state.customNetworks = state.customNetworks.filter(
+        net => net.networkId !== networkId,
       );
 
       await this.storage.set(StorageKeys.customNetworksInfo, state);

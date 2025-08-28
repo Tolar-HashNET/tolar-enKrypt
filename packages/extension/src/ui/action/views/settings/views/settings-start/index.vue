@@ -3,7 +3,6 @@
     <settings-header v-bind="$attrs" />
 
     <div class="settings__block">
-      <settings-button title="General" @click="$emit('action:general')" />
       <settings-button
         title="Contact support"
         :is-link="true"
@@ -12,16 +11,6 @@
     </div>
 
     <div class="settings__block">
-      <settings-button
-        title="Bug bounty program"
-        :is-link="true"
-        @click="bugAction"
-      />
-      <settings-button
-        title="Privacy and terms"
-        :is-link="true"
-        @click="privacyAction"
-      />
       <settings-button title="About" @click="$emit('action:about')" />
     </div>
 
@@ -36,7 +25,7 @@
 
     <div class="settings__copyright">
       <p>Version {{ version }} ({{ buildTime }})</p>
-      <p>© {{ new Date().getFullYear() }} by MyEtherWallet Inc.</p>
+      <p>© {{ new Date().getFullYear() }} by Tolar.io Inc.</p>
     </div>
 
     <modal-sign
@@ -68,30 +57,12 @@ const version = __PACKAGE_VERSION__;
 const buildTime = __BUILD_TIME__;
 defineEmits<{
   (e: 'action:reset'): void;
-  (e: 'action:support'): void;
-  (e: 'action:general'): void;
   (e: 'action:about'): void;
 }>();
 
-const bugAction = () => {
-  window.open(
-    'https://hackerone.com/myetherwallet?type=team',
-    '_blank',
-    'noopener',
-  );
-};
-
-const privacyAction = () => {
-  window.open(
-    'https://www.myetherwallet.com/privacy-policy',
-    '_blank',
-    'noopener',
-  );
-};
-
 const contactSupport = () => {
   window.open(
-    'https://www.enkrypt.com/?ref=enkrypt_help',
+    'https://t.me/tolarofficial',
     '_blank',
     'noopener',
   );

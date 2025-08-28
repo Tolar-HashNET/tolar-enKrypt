@@ -11,7 +11,6 @@ import { ProviderName, ProviderRPCRequest } from '@/types/provider';
 import { MessageMethod } from '../types';
 import DomainState from '@/libs/domain-state';
 import Web3 from 'web3-eth';
-import { CustomEvmNetworkOptions } from '../types/custom-evm-network';
 import { numberToHex } from 'web3-utils';
 import { WindowPromise } from '@/libs/window-promise';
 import { getAllNetworks } from '@/libs/utils/networks';
@@ -20,6 +19,7 @@ import NetworksState from '@/libs/networks-state';
 import { EvmNetwork } from '../types/evm-network';
 import { trackNetworkSelected } from '@/libs/metrics';
 import { NetworkChangeEvents } from '@/libs/metrics/types';
+import {CustomNetworkOptions} from "@/providers/common/types";
 
 interface AddEthereumChainPayload {
   chainId: string;
@@ -61,7 +61,7 @@ const method: MiddlewareFunction = async function (
           getCustomError('Cannot add custom network, RPC not responding'),
         );
       }
-      const customNetworkOptions: CustomEvmNetworkOptions = {
+      const customNetworkOptions: CustomNetworkOptions = {
         name: params.nativeCurrency.symbol,
         node: params.rpcUrls[0],
         name_long: params.chainName,
@@ -117,9 +117,9 @@ const setExistingCustomNetwork = async (
   res: CallbackFunction,
 ): Promise<boolean> => {
   const customNetworksState = new CustomNetworksState();
-  const customNetworks = await customNetworksState.getAllCustomEVMNetworks();
+  const customNetworks = await customNetworksState.getAllCustomNetworks();
 
-  let existingNetwork: CustomEvmNetworkOptions | undefined =
+  let existingNetwork: CustomNetworkOptions | undefined =
     customNetworks.find(net => net.chainID === chainId);
   if (!existingNetwork) {
     const allNetworks = await getAllNetworks();

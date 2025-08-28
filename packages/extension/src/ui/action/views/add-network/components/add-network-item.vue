@@ -32,16 +32,15 @@
 <script setup lang="ts">
 import { PropType } from 'vue';
 import Switch from '@action/components/switch/index.vue';
-// import InfoIcon from "@action/icons/common/info-icon.vue";
 import CloseIcon from '@action/icons/common/close-icon.vue';
 import { NodeType } from '@/types/provider';
-import { CustomEvmNetwork } from '@/providers/ethereum/types/custom-evm-network';
 import TestNetworkIcon from '@action/icons/common/test-network-icon.vue';
 import Tooltip from '@/ui/action/components/tooltip/index.vue';
+import {CustomTolarNetwork} from "@/providers/tolar/networks/custom-tolar-network.ts";
 
 const emit = defineEmits<{
   (e: 'networkToggled', name: string, isActive: boolean): void;
-  (e: 'networkDeleted', chainId: string): void;
+  (e: 'networkDeleted', networkId: number): void;
 }>();
 
 const props = defineProps({
@@ -63,10 +62,10 @@ const check = async (isChecked: boolean) => {
 };
 
 const deleteNetwork = async () => {
-  const chainId = (props.network as unknown as CustomEvmNetwork).chainID;
+  const networkId = (props.network as unknown as CustomTolarNetwork).networkId;
 
-  if (chainId !== undefined) {
-    emit('networkDeleted', chainId);
+  if (networkId !== undefined) {
+    emit('networkDeleted', networkId);
   }
 };
 </script>

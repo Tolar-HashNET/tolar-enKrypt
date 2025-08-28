@@ -11,7 +11,7 @@
       @focus="changeFocus"
       @blur="changeFocus"
     />
-    <span>attoTOL</span>
+    <span>atto{{ props.currencyName }}</span>
   </div>
 </template>
 
@@ -36,6 +36,10 @@ const props = defineProps({
     type: String,
     default: "21000",
   },
+  currencyName: {
+    type: String,
+    default: '',
+  }
 });
 
 const feeAmount = computed({

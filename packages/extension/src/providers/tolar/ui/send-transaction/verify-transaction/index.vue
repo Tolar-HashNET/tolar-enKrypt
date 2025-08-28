@@ -32,7 +32,7 @@
             :network="network"
           />
           <verify-transaction-amount :token="txData.toToken" />
-          <verify-transaction-fee :gas-fee="txData.txFee.nativeValue" />
+          <verify-transaction-fee :gas-fee="txData.txFee.nativeValue" :currency-name="network.currencyName" />
         </div>
       </custom-scrollbar>
 

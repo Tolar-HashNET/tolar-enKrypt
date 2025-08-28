@@ -1,5 +1,7 @@
 import type { toBN } from 'web3-utils';
 
+export * from "./costum-network"
+
 export interface GasFeeInfo {
   nativeValue: string;
   fiatValue: string;

@@ -10,7 +10,7 @@ const chromeManifest = {
       '64': 'assets/img/icons/icon64.png',
       '192': 'assets/img/icons/icon192.png',
     },
-    default_title: 'Enkrypt',
+    default_title: 'Taquin 2.0',
     default_popup: 'action.html',
   },
   background: {

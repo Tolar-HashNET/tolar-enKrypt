@@ -38,12 +38,12 @@
     <div class="add-network__custom-block double">
       <label-input
         type="text"
-        label="Chain ID"
+        label="Network Id"
         class="add-network__custom-input"
         placeholder="0"
-        :value="chainIDValue"
-        :is-error="chainIDInvalid"
-        @update:value="chainIDChanged"
+        :value="networkIdValue"
+        :is-error="networkIdInvalid"
+        @update:value="networkIdChanged"
       />
 
       <label-input
@@ -80,29 +80,15 @@
 </template>
 
 <script setup lang="ts">
-import { PropType, ref, computed, onMounted } from 'vue';
+import { PropType, ref, computed } from 'vue';
 import CloseIcon from '@action/icons/common/close-icon.vue';
 import ArrowBack from '@action/icons/common/arrow-back.vue';
 import LabelInput from '@action/components/label-input/index.vue';
 import BaseButton from '@action/components/base-button/index.vue';
-import Web3 from 'web3-eth';
-import { CustomEvmNetworkOptions } from '@/providers/ethereum/types/custom-evm-network';
-import { toHex } from 'web3-utils';
 import CustomNetworksState from '@/libs/custom-networks-state';
+import {CustomNetworkOptions} from "@/providers/common/types";
+import { validator } from "web3";
 
-interface NetworkConfigItem {
-  name: string;
-  chain: string;
-  rpc: string[];
-  shortName: string;
-  nativeCurrency: {
-    name: string;
-    symbol: string;
-    decimals: number;
-  };
-  chainId: number;
-  networkId: number;
-}
 
 const customNetworksState = new CustomNetworksState();
 
@@ -113,8 +99,8 @@ const rpcURLValue = ref<string>('');
 const rpcInvalid = ref(false);
 const rpcVerified = ref(false);
 
-const chainIDValue = ref<string>('');
-const chainIDInvalid = ref(false);
+const networkIdValue = ref<string>('');
+const networkIdInvalid = ref(false);
 
 const symbolValue = ref<string>('');
 const symbolInvalid = ref(false);
@@ -122,14 +108,20 @@ const symbolInvalid = ref(false);
 const blockURLValue = ref<string>('');
 const blockURLInvalid = ref(false);
 
-const networkConfigs = ref<NetworkConfigItem[]>([]);
-
 const isValid = computed<boolean>(() => {
   if (nameValue.value?.length < 1 || nameInvalid.value) return false;
   if (rpcURLValue.value?.length < 1 || rpcInvalid.value) return false;
-  if (chainIDValue.value?.length < 1 || chainIDInvalid.value) return false;
-  if (symbolValue.value?.length < 1 || symbolInvalid.value) return false;
-  if (blockURLInvalid.value) return false;
+
+  if (!validator.isUInt(networkIdValue.value))
+    return false;
+
+  if (symbolValue.value?.length < 1 || symbolInvalid.value){
+    return false;
+  }
+
+  if (blockURLInvalid.value){
+    return false;
+  }
 
   return true;
 });
@@ -144,17 +136,6 @@ const props = defineProps({
     default: () => ({}),
   },
 });
-
-onMounted(() => {
-  fetchNetworkConfigs();
-});
-
-const fetchNetworkConfigs = async () => {
-  const res = await fetch('https://chainid.network/chains.json');
-  const data = await res.json();
-
-  networkConfigs.value = data as NetworkConfigItem[];
-};
 
 const nameChanged = (newVal: string) => {
   if (newVal.trim().length > 0) {
@@ -171,28 +152,14 @@ const rpcURLChanged = async (newVal: string) => {
 
   try {
     new URL(newVal); // Check if value is URL
-
-    const web3 = new Web3(newVal);
-    const chainId = await web3.getChainId();
-
     rpcInvalid.value = false;
     rpcVerified.value = true;
-
-    const networkConfig = networkConfigs.value.find(
-      net => net.chainId === chainId,
-    );
-
-    if (networkConfig) {
-      symbolValue.value = networkConfig.nativeCurrency.symbol;
-      nameValue.value = networkConfig.name;
-    }
-
-    chainIDValue.value = chainId.toString();
   } catch {
     rpcInvalid.value = true;
     rpcVerified.value = false;
   }
 };
+
 const symbolChanged = (newVal: string) => {
   if (newVal.trim().length > 0) {
     symbolInvalid.value = false;
@@ -202,19 +169,14 @@ const symbolChanged = (newVal: string) => {
 
   symbolValue.value = newVal;
 };
-const chainIDChanged = (newVal: string) => {
-  if (
-    newVal.trim().length < 1 ||
-    isNaN(Number(newVal.trim())) ||
-    newVal.includes('.')
-  ) {
-    chainIDInvalid.value = true;
-  } else {
-    chainIDInvalid.value = false;
-  }
 
-  chainIDValue.value = newVal;
+const networkIdChanged = (newVal: string) => {
+  console.error("!-- add-custom-network PLACEHOLDER --!");
+
+  networkIdInvalid.value = !validator.isUInt(newVal);
+  networkIdValue.value = newVal;
 };
+
 const blockURLChanged = (newVal: string) => {
   try {
     new URL(newVal);
@@ -244,12 +206,13 @@ const sendAction = async () => {
     blockExplorerTX = `${blockExplorer}tx/[[txHash]]`;
   }
 
-  const customNetworkOptions: CustomEvmNetworkOptions = {
+  const customNetworkOptions: CustomNetworkOptions = {
     name: nameValue.value.trim().split(' ').join(''),
     name_long: nameValue.value,
     currencyName: symbolValue.value,
     currencyNameLong: nameValue.value,
-    chainID: toHex(chainIDValue.value) as `0x${string}`,
+    chainID: '0x0',
+    networkId: Number(networkIdValue.value),
     node: rpcURLValue.value,
     blockExplorerAddr,
     blockExplorerTX,
@@ -259,7 +222,7 @@ const sendAction = async () => {
 
   nameValue.value = '';
   symbolValue.value = '';
-  chainIDValue.value = '';
+  networkIdValue.value = '';
   rpcURLValue.value = '';
   blockURLValue.value = '';
 

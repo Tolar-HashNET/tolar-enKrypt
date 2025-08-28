@@ -93,10 +93,10 @@ import commonPopup from '@action/views/common-popup/index.vue';
 import { WindowPromiseHandler } from '@/libs/window-promise';
 import { ProviderRequestOptions } from '@/types/provider';
 import WarnIcon from '@/ui/action/icons/send/warning-icon.vue';
-import { CustomEvmNetworkOptions } from '../types/custom-evm-network';
 import CustomNetworksState from '@/libs/custom-networks-state';
 import { getCustomError } from '@/libs/error';
 import ethIcon from '../networks/icons/eth.svg';
+import {CustomNetworkOptions} from "@/providers/common/types";
 
 const windowPromise = WindowPromiseHandler(1);
 
@@ -107,7 +107,7 @@ const Options = ref<ProviderRequestOptions>({
   url: '',
   tabId: 0,
 });
-const networkOptions = ref<CustomEvmNetworkOptions>({
+const networkOptions = ref<CustomNetworkOptions>({
   name: '~',
   name_long: '~',
   node: '',

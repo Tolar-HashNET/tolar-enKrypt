@@ -8,13 +8,13 @@ import SolanaNetworks from '@/providers/solana/networks';
 import TolarNetworks from "@/providers/tolar/networks";
 import { BaseNetwork } from '@/types/base-network';
 import CustomNetworksState from '../custom-networks-state';
-import { CustomEvmNetwork } from '@/providers/ethereum/types/custom-evm-network';
 import Ethereum from '@/providers/ethereum/networks/eth';
 import Polkadot from '@/providers/polkadot/networks/polkadot';
 import Bitcoin from '@/providers/bitcoin/networks/bitcoin';
 import Kadena from '@/providers/kadena/networks/kadena';
 import Solana from '@/providers/solana/networks/solana';
 import Tolar from "@/providers/tolar/networks/tolar-mainnet";
+import {CustomTolarNetwork} from "@/providers/tolar/networks/custom-tolar-network.ts";
 
 const providerNetworks: Record<ProviderName, Record<string, BaseNetwork>> = {
   [ProviderName.ethereum]: EthereumNetworks,
@@ -29,8 +29,8 @@ const getAllNetworks = async (): Promise<BaseNetwork[]> => {
   const customNetworksState = new CustomNetworksState();
 
   const customNetworks = (
-    await customNetworksState.getAllCustomEVMNetworks()
-  ).map(options => new CustomEvmNetwork(options));
+    await customNetworksState.getAllCustomNetworks()
+  ).map(options => new CustomTolarNetwork(options));
 
   return (Object.values(EthereumNetworks) as BaseNetwork[])
     .concat(Object.values(PolkadotNetworks) as BaseNetwork[])
@@ -51,11 +51,11 @@ const getProviderNetworkByName = async (
 ): Promise<BaseNetwork | undefined> => {
   let networks = Object.values(providerNetworks[provider]);
 
-  if (provider === ProviderName.ethereum) {
+  if (provider === ProviderName.tolar) {
     const customNetworkState = new CustomNetworksState();
     const customNetworks = (
-      await customNetworkState.getAllCustomEVMNetworks()
-    ).map(options => new CustomEvmNetwork(options));
+      await customNetworkState.getAllCustomNetworks()
+    ).map(options => new CustomTolarNetwork(options));
 
     networks = [...customNetworks, ...networks];
   }

@@ -1,7 +1,6 @@
 import cacheFetch from '@/libs/cache-fetch';
 import { Activity, ActivityStatus, ActivityType } from '@/types/activity';
 import { BaseNetwork } from '@/types/base-network';
-import { NetworkEndpoints, NetworkTtls } from './configs';
 import {converters} from "@tolar/web3-plugin-tolar";
 import type {RpcTxResponse} from "@tolar/web3-plugin-tolar";
 import {orderBy} from "lodash"
@@ -35,15 +34,16 @@ const getAddressActivity = async (
   }
 };
 
+const tolarTtls = 30000;
+
 export default async (
   network: BaseNetwork,
   address: string,
 ): Promise<Activity[]> => {
-  const networkName = network.name as keyof typeof NetworkEndpoints;
   const activities = await getAddressActivity(
     address,
-    NetworkEndpoints[networkName],
-    NetworkTtls[networkName],
+    network.node,
+    tolarTtls,
   );
 
   return activities.map((activity: RpcTxResponse, i: number): Activity => {

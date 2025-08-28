@@ -2,7 +2,7 @@
   <div class="verify-transaction-fee-tol">
     <p class="verify-transaction-fee-tol__crypto">
       {{ gasFee }}
-      <span>attoTOL</span>
+      <span>atto{{ currencyName }}</span>
     </p>
   </div>
 </template>
@@ -14,6 +14,10 @@ defineProps({
     default: () => {
       return "";
     },
+  },
+  currencyName: {
+    type: String,
+    default: '',
   },
 });
 </script>

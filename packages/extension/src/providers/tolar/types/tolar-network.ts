@@ -5,6 +5,7 @@ import { AssetsType, ProviderName } from "@/types/provider";
 import { NetworkNames, SignerType } from "@enkryptcom/types";
 import TolarAPI from "../libs/api";
 import createIcon from "@/providers/ethereum/libs/blockies";
+import icon from '../networks/icons/tolar-logo.png';
 import {
   formatFloatingPointValue,
   formatFiatValue,
@@ -20,7 +21,6 @@ export interface TolarNetworkOptions {
   blockExplorerTX: string;
   blockExplorerAddr: string;
   isTestNetwork: boolean;
-  icon: string;
   node: string;
   activityHandler: (
     network: BaseNetwork,
@@ -68,6 +68,7 @@ export class TolarNetwork extends BaseNetwork {
       provider: ProviderName.tolar,
       homePage: "https://tolar.io/",
       basePath: "m/44'/60'/0'/0",
+      icon: icon,
       displayAddress: (address: string): string => {
         return address;
       },

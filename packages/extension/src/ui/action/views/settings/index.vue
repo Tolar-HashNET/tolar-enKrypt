@@ -6,15 +6,9 @@
         v-if="isStart"
         @action:reset="resetAction"
         @action:about="aboutAction"
-        @action:general="generalAction"
         @action:recovery-phrase="recoveryPhraseAction"
         @action:support="supportAction"
         @window:close="close"
-      />
-      <settings-general
-        v-if="isGeneral"
-        @window:close="close"
-        @window:back="startAction"
       />
       <settings-support
         v-if="isSupport"
@@ -45,7 +39,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import SettingsStart from './views/settings-start/index.vue';
-import SettingsGeneral from './views/settings-general/index.vue';
 import SettingsSupport from './views/settings-support/index.vue';
 import SettingsAbout from './views/settings-about/index.vue';
 import SettingsRecovery from './views/settings-recovery/index.vue';
