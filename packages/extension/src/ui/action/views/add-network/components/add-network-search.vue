@@ -19,7 +19,7 @@
         <div class="add-network__search-list-item">
           <test-network-icon /><span>Show testnets</span>
           <Switch
-            :is-checked="false"
+            :is-checked="props.isChecked"
             @update:check="$emit('toggle:testNetworks')"
           />
         </div>
@@ -39,13 +39,19 @@ import { onClickOutside } from '@vueuse/core';
 
 const openList = ref(false);
 const tooltip = ref(null);
-defineProps({
+const props = defineProps({
   value: {
     type: String,
     default: () => {
       return '';
     },
   },
+  isChecked: {
+    type: Boolean,
+    default: () => {
+      return true;
+    },
+  }
 });
 defineEmits<{
   (e: 'toggle:testNetworks'): void;
@@ -68,6 +74,7 @@ const action = () => {
 onClickOutside(tooltip, () => {
   if (openList.value) openList.value = false;
 });
+
 </script>
 
 <style lang="less" scoped>

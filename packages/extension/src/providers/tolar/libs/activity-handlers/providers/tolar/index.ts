@@ -3,7 +3,7 @@ import { Activity, ActivityStatus, ActivityType } from '@/types/activity';
 import { BaseNetwork } from '@/types/base-network';
 import {converters} from "@tolar/web3-plugin-tolar";
 import type {RpcTxResponse} from "@tolar/web3-plugin-tolar";
-import {orderBy} from "lodash"
+import {orderBy, isEmpty} from "lodash"
 
 type RawTransactionList = { result: {transactions: object[] }};
 
@@ -25,6 +25,10 @@ const getAddressActivity = async (
       },
       ttl
     );
+
+    if(isEmpty(rawTxResponses.result)) {
+      return [];
+    }
 
     const rpcTxs = rawTxResponses.result.transactions.map((rawTxResponse) => converters.toRpcTxResponse(rawTxResponse));
     return orderBy(rpcTxs, "confirmationTimestamp", "desc");

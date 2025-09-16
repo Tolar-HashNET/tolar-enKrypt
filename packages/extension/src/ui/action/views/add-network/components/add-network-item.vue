@@ -40,7 +40,7 @@ import {CustomTolarNetwork} from "@/providers/tolar/networks/custom-tolar-networ
 
 const emit = defineEmits<{
   (e: 'networkToggled', name: string, isActive: boolean): void;
-  (e: 'networkDeleted', networkId: number): void;
+  (e: 'networkDeleted', networkName: string): void;
 }>();
 
 const props = defineProps({
@@ -62,10 +62,10 @@ const check = async (isChecked: boolean) => {
 };
 
 const deleteNetwork = async () => {
-  const networkId = (props.network as unknown as CustomTolarNetwork).networkId;
-
-  if (networkId !== undefined) {
-    emit('networkDeleted', networkId);
+  const networkName = (props.network as unknown as CustomTolarNetwork).name;
+  console.error(`!-- Deleting network ${networkName} --!`);
+  if (networkName !== undefined) {
+    emit('networkDeleted', networkName);
   }
 };
 </script>

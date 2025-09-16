@@ -19,31 +19,19 @@
     >
       <add-network-search
         :value="searchInput"
+        :is-checked="showTestNets"
         @update:value="updateSearch"
         @toggle:test-networks="onTestNetCheck"
         @action:custom-network="toCustom"
       />
 
-      <div v-if="searchInput === ''">
-        <h3 class="add-network__list-header">Popular</h3>
-        <add-network-item
-          v-for="(item, index) in popular"
-          :key="index"
-          :network="item"
-          :is-active="item.isActive"
-          :show-tooltip="!hasMoreThanOneActiveNetwork"
-          @network-toggled="onToggle"
-        />
-      </div>
       <h3 class="add-network__list-header">All networks</h3>
       <add-network-item
         v-for="item in searchAllNetworks"
         :key="item.name"
         :network="item"
         :is-active="item.isActive"
-        :is-custom-network="
-          (item as unknown as CustomTolarNetwork).isCustomNetwork
-        "
+        :is-custom-network="(item as unknown as CustomTolarNetwork).isCustomNetwork"
         :show-tooltip="!hasMoreThanOneActiveNetwork"
         @network-toggled="onToggle"
         @network-deleted="onNetworkDeleted"
@@ -79,7 +67,7 @@ const all = ref<Array<NodeTypesWithActive>>([]);
 const popular = ref<Array<NodeTypesWithActive>>([]);
 const scrollProgress = ref(0);
 const manageNetworkScrollRef = ref<ComponentPublicInstance<HTMLElement>>();
-const showTestNets = ref(false);
+const showTestNets = ref(true);
 const hasMoreThanOneActiveNetwork = ref(false);
 
 defineExpose({ manageNetworkScrollRef });
@@ -124,8 +112,7 @@ const setNetworkLists = async (isTestActive: boolean) => {
     .sort((a, b) => a.name_long.localeCompare(b.name_long));
 
   all.value = allNetworksNotTestNets;
-  hasMoreThanOneActiveNetwork.value =
-    all.value.filter(net => net.isActive).length > 1;
+  hasMoreThanOneActiveNetwork.value = all.value.filter(net => net.isActive).length > 1;
   popular.value = popularNetworks;
 };
 
@@ -134,6 +121,7 @@ onBeforeMount(async () => {
 });
 
 const onTestNetCheck = async () => {
+  console.log(`onTestNetCheck: ${showTestNets.value}`);
   showTestNets.value = !showTestNets.value;
   await setNetworkLists(showTestNets.value);
 };
@@ -163,9 +151,9 @@ const onToggle = async (networkName: string, isActive: boolean) => {
   }
 };
 
-const onNetworkDeleted = async (networkId: number) => {
+const onNetworkDeleted = async (networkName: string) => {
   const customNetworksState = new CustomNetworksState();
-  await customNetworksState.deleteNetwork(networkId);
+  await customNetworksState.deleteNetworkByName(networkName);
 
   all.value = await getAllNetworksAndStatus();
   hasMoreThanOneActiveNetwork.value =
@@ -176,10 +164,12 @@ const onNetworkDeleted = async (networkId: number) => {
 const updateSearch = (value: string) => {
   searchInput.value = value;
 };
+
 const handleScroll = (e: any) => {
   const progress = Number(e.target.lastChild.style.top.replace('px', ''));
   scrollProgress.value = progress;
 };
+
 const isHasScroll = () => {
   if (manageNetworkScrollRef.value) {
     return manageNetworkScrollRef.value.$el.classList.contains('ps--active-y');

@@ -10,10 +10,11 @@
 </template>
 
 <script setup lang="ts">
+
 const emit = defineEmits<{
   (e: 'update:check', isChecked: boolean): void;
 }>();
-defineProps({
+const props = defineProps({
   isChecked: Boolean,
 });
 

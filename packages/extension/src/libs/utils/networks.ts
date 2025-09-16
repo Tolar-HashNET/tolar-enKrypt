@@ -25,6 +25,7 @@ const providerNetworks: Record<ProviderName, Record<string, BaseNetwork>> = {
   [ProviderName.tolar]: TolarNetworks,
   [ProviderName.enkrypt]: {},
 };
+
 const getAllNetworks = async (): Promise<BaseNetwork[]> => {
   const customNetworksState = new CustomNetworksState();
 
@@ -32,14 +33,9 @@ const getAllNetworks = async (): Promise<BaseNetwork[]> => {
     await customNetworksState.getAllCustomNetworks()
   ).map(options => new CustomTolarNetwork(options));
 
-  return (Object.values(EthereumNetworks) as BaseNetwork[])
-    .concat(Object.values(PolkadotNetworks) as BaseNetwork[])
-    .concat(Object.values(BitcoinNetworks) as BaseNetwork[])
-    .concat(Object.values(KadenaNetworks) as BaseNetwork[])
-    .concat(Object.values(SolanaNetworks) as BaseNetwork[])
-    .concat(Object.values(TolarNetworks) as BaseNetwork[])
-    .concat(customNetworks);
+  return (Object.values(TolarNetworks) as BaseNetwork[]).concat(customNetworks);
 };
+
 const getNetworkByName = async (
   name: string,
 ): Promise<BaseNetwork | undefined> => {

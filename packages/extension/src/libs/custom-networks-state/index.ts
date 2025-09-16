@@ -20,7 +20,7 @@ export default class CustomNetworksState {
     options.name = `custom-${options.name}`;
     if (state && state.customNetworks) {
       const networkExists = state.customNetworks.find(
-        net => net.networkId === options.networkId,
+        net => net.name === options.name
       );
 
       if (networkExists) {
@@ -77,6 +77,20 @@ export default class CustomNetworksState {
     if (state && state.customNetworks) {
       state.customNetworks = state.customNetworks.filter(
         net => net.networkId !== networkId,
+      );
+
+      await this.storage.set(StorageKeys.customNetworksInfo, state);
+    }
+  }
+
+  async deleteNetworkByName(networkName: string): Promise<void> {
+    const state: IState = await this.storage.get(
+      StorageKeys.customNetworksInfo,
+    );
+
+    if (state && state.customNetworks) {
+      state.customNetworks = state.customNetworks.filter(
+        net => net.name !== networkName,
       );
 
       await this.storage.set(StorageKeys.customNetworksInfo, state);
