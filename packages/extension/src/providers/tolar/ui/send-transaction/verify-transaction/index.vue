@@ -181,6 +181,7 @@ const sendAction = async () => {
   try {
     const tolarAPI = (await tolarNetwork.api()) as TolarAPI;
     const nonce = await tolarAPI.getNonce(txActivity.from);
+
     const signerId = new TolPublicKey(account.value!.publicKey);
     const sender = TolAddress.fromPublicKey(signerId.hexStr);
 

@@ -3,11 +3,11 @@ import packageJson from '../../package.json';
 const { version } = packageJson;
 
 export default {
-  homepage_url: 'https://www.enkrypt.com',
+  homepage_url: 'https://www.tolar.io',
   version,
-  name: 'Enkrypt: ETH, BTC and Solana Wallet',
-  short_name: 'Enkrypt',
-  description: 'The best multichain crypto wallet',
+  name: 'Taquin: Tolar Wallet',
+  short_name: 'Taquin',
+  description: 'The best Tolar crypto wallet',
   permissions: [
     'storage',
     'unlimitedStorage',

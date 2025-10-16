@@ -32,19 +32,21 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, type PropType } from 'vue';
+import {computed, type PropType, ref} from 'vue';
 import ImportAccountHeader from '../components/import-account-header.vue';
 import BaseButton from '@action/components/base-button/index.vue';
 import bs58 from 'bs58';
 import Wallet from 'ethereumjs-wallet';
-import { bufferToHex, hexToBuffer } from '@enkryptcom/utils';
-import { type KeyPairAdd, SignerType } from '@enkryptcom/types';
+import {bufferToHex, hexToBuffer} from '@enkryptcom/utils';
+import {type KeyPairAdd, SignerType} from '@enkryptcom/types';
 import PublicKeyRing from '@/libs/keyring/public-keyring';
-import { BaseNetwork } from '@/types/base-network';
-import { decode as wifDecode } from 'wif';
-import { ProviderName } from '@/types/provider';
-import { getPublicKey } from '@noble/secp256k1';
-import { Keypair } from '@solana/web3.js';
+import {BaseNetwork} from '@/types/base-network';
+import {decode as wifDecode} from 'wif';
+import {ProviderName} from '@/types/provider';
+import {getPublicKey} from '@noble/secp256k1';
+import {Keypair} from '@solana/web3.js';
+import {account as tolarAccount} from "@tolar/web3-plugin-tolar";
+import {privateKeyToPublicKey} from "web3-eth-accounts";
 
 const isProcessing = ref(false);
 const privKey = ref('');
@@ -67,7 +69,7 @@ const formattedPrivateKey = computed(() => privKey.value.trim());
 
 const isValidKey = computed(() => {
   try {
-    if (props.network.provider === ProviderName.ethereum) {
+    if (props.network.provider === ProviderName.ethereum || props.network.provider === ProviderName.tolar) {
       const buffer = hexToBuffer(formattedPrivateKey.value);
       new Wallet(buffer);
       return true;
@@ -106,6 +108,23 @@ const importAction = async () => {
       address: wallet.getAddressString(),
       name: '',
       signerType: SignerType.secp256k1,
+    });
+  } else if (props.network.provider === ProviderName.tolar) {
+    const account = tolarAccount.privateKeyToAccount(formattedPrivateKey.value, false);
+
+    if (await keyring.accountAlreadyAdded(account.address)) {
+      accountAlreadyExists.value = true;
+      return;
+    }
+
+    const publicKey = privateKeyToPublicKey(account.privateKey, false);
+
+    emit('update:wallet', {
+      privateKey: account.privateKey,
+      publicKey,
+      address: account.address,
+      name: '',
+      signerType: SignerType.secp256k1tol,
     });
   } else if (props.network.provider === ProviderName.bitcoin) {
     const decoded = wifDecode(formattedPrivateKey.value);

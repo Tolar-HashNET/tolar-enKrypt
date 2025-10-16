@@ -19,7 +19,7 @@
   "dependencies": {
     "@enkryptcom/utils": "workspace:^",
     "@ethereumjs/util": "^9.1.0",
-    "@tolar/web3-plugin-tolar": "0.9.94",
+    "@tolar/web3-plugin-tolar": "1.0.0",
     "bip39": "^3.1.0",
     "hdkey": "^2.1.0"
   },
