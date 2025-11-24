@@ -31,7 +31,7 @@ export enum EmitEvent {
 
 export const TolarRpcEndpoints = new Map<NetworkId, string>([
   [NetworkId.Local, "http://127.0.0.1:8200/jsonrpc"],
-  [NetworkId.Stagenet, "https://jsongw.staging.tolar.io/jsonrpc"],
+  [NetworkId.Stagenet, "https://jsongw.stagenet.tolar.io/jsonrpc"],
   [NetworkId.Testnet, "https://jsongw.testnet.tolar.io/jsonrpc"],
   [NetworkId.Mainnet, "https://jsongw.mainnet.tolar.io/jsonrpc"]
 ]);
