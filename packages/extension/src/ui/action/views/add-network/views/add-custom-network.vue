@@ -171,8 +171,6 @@ const symbolChanged = (newVal: string) => {
 };
 
 const networkIdChanged = (newVal: string) => {
-  console.error("!-- add-custom-network PLACEHOLDER --!");
-
   networkIdInvalid.value = !validator.isUInt(newVal);
   networkIdValue.value = newVal;
 };

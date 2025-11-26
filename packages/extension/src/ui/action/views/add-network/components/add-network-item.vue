@@ -63,7 +63,6 @@ const check = async (isChecked: boolean) => {
 
 const deleteNetwork = async () => {
   const networkName = (props.network as unknown as CustomTolarNetwork).name;
-  console.error(`!-- Deleting network ${networkName} --!`);
   if (networkName !== undefined) {
     emit('networkDeleted', networkName);
   }

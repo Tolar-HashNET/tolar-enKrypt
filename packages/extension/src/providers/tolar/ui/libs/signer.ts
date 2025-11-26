@@ -45,11 +45,6 @@ const sendRawTransaction = async (tolTxBody: TolTxBody, account: EnkryptAccount,
     signerId: signerId.encodeProto(),
   });
 
-  console.log(
-    "signerId from proto: ",
-    TolPublicKey.fromProto(protoSignatureData.signerId).hexStr
-  );
-
   const protoSignedTx = proto.SignedTransaction.create({
     body: protoTxBody,
     sigData: protoSignatureData,
@@ -59,18 +54,11 @@ const sendRawTransaction = async (tolTxBody: TolTxBody, account: EnkryptAccount,
     proto.SignedTransaction.toBinary(protoSignedTx)
   );
 
-  console.log(`!-- fromAddress: ${tolTxBody.senderAddress.hexStr} --!`);
-  console.log(`!-- toAddress: ${tolTxBody.receiverAddress.hexStr} --!`);
-  console.log(`!-- account.address: ${account.address} --!`);
-  console.log(`!-- account.publicKey: ${account.publicKey} --!`);
-  console.log(`!-- signature: ${signature} --!`);
-  console.log(`!-- txBodyHash: ${txBodyHash} --!`);
-
   const txHash = await api.sendSignedTransaction(rawSignedTx);
 
   await retryAsync(async () => api.getTransactionStatus(txHash), {
     delay: 1000,
-    maxTry: 15,
+    maxTry: 30,
     until: (lastResult) => lastResult !== null,
   });
 

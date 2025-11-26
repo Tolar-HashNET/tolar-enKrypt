@@ -44,6 +44,7 @@ import { ProviderName } from '@/types/provider';
 import { getAccountFromJSON } from '@/providers/polkadot/libs/keystore';
 import { KeyPairAdd } from '@enkryptcom/types';
 import PublicKeyRing from '@/libs/keyring/public-keyring';
+import { converters } from "@tolar/web3-plugin-tolar";
 
 const emit = defineEmits<{
   (e: 'navigate:importAccount'): void;
@@ -75,7 +76,7 @@ const props = defineProps({
 
 const isProcessing = ref(false);
 const isDisabled = computed(() => {
-  return props.keystorePassword.length < 3;
+  return false;
 });
 
 const fromMyEtherWalletV2 = (json: any) => {
@@ -107,30 +108,7 @@ const unlock = async () => {
   error.value = '';
 
   if (props.network.provider === ProviderName.ethereum) {
-    try {
-      const wallet = await getWalletFromPrivKeyFile(
-        props.fileJson,
-        props.keystorePassword,
-      );
-
-      const newAddress = `0x${wallet.getAddress().toString('hex')}`;
-
-      if (await keyring.accountAlreadyAdded(newAddress)) {
-        error.value = 'This account has already been added';
-        return;
-      }
-
-      emit('update:wallet', {
-        privateKey: wallet.getPrivateKeyString(),
-        publicKey: wallet.getPublicKeyString(),
-        address: wallet.getAddressString(),
-        name: '',
-        signerType: props.network.signer[0],
-      });
-    } catch (e) {
-      isProcessing.value = false;
-      error.value = (e as Error).message;
-    }
+    await addEthAccount(null);
   } else if (props.network.provider === ProviderName.polkadot) {
     try {
       const account = getAccountFromJSON(
@@ -148,8 +126,39 @@ const unlock = async () => {
       isProcessing.value = false;
       error.value = e.message;
     }
+  } else if (props.network.provider === ProviderName.tolar) {
+    await addEthAccount((rawAddress) => { return converters.toTolHexAddress(rawAddress); });
   }
 };
+
+const addEthAccount = async (addressFormatter: ((rawAddress: string) => string) | null) => {
+  try {
+    const wallet = await getWalletFromPrivKeyFile(
+      props.fileJson,
+      props.keystorePassword,
+    );
+
+    const ethAddress = `0x${wallet.getAddress().toString('hex')}`;
+    const newAddress = addressFormatter === null ? ethAddress : addressFormatter(ethAddress);
+
+    if (await keyring.accountAlreadyAdded(newAddress)) {
+      error.value = 'This account has already been added';
+      return;
+    }
+
+    emit('update:wallet', {
+      privateKey: wallet.getPrivateKeyString(),
+      publicKey: wallet.getPublicKeyString(),
+      address: newAddress,
+      name: '',
+      signerType: props.network.signer[0],
+    });
+  } catch (e) {
+    isProcessing.value = false;
+    error.value = (e as Error).message;
+  }
+}
+
 </script>
 
 <style lang="less">
