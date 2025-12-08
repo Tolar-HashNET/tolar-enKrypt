@@ -3,13 +3,11 @@
     <logo-big class="new-wallet__logo" />
     <h3>Multiple Chains.<br />One Wallet.</h3>
     <p>
-      Enkrypt is a wallet that gives you easy access to all things crypto and
+      Taquin is a wallet that gives you easy access to Tolar Hashnet crypto and
       web3.
     </p>
     <p>
-      Switch accounts and chains with 1 click.<br />
-      Enkrypt currently supports the Ethereum and Polkadot ecosystems with more
-      chains on the way!
+      Switch accounts and chains with 1 click.
     </p>
 
     <div class="new-wallet__buttons">

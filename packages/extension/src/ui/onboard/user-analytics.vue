@@ -5,7 +5,7 @@
       Privacy and<br />
       Data collection.
     </h3>
-    <p>We collect the following anonymous data about your use of Enkrypt:</p>
+    <p>We collect the following anonymous data about your use of Taquin:</p>
     <p>
       Blockchain, browser, operating system, session time, actions and page
       views per visit, which we collect to enhance user experience with our
@@ -13,11 +13,7 @@
     </p>
     <p>
       Choosing to decline anonymous data collection will have no impact on your
-      experience using the Enkrypt browser extension. Full details about the
-      anonymous data we collect and what we do with it are provided in our
-      <a href="https://www.myetherwallet.com/privacy-policy" target="_blank"
-        >Privacy Policy</a
-      >.
+      experience using the Taquin browser extension.
     </p>
 
     <div class="new-wallet__buttons">
