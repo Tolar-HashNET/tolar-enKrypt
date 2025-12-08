@@ -75,7 +75,7 @@ import KadenaAccountState from '@/providers/kadena/libs/accounts-state';
 import SolanaAccountState from '@/providers/solana/libs/accounts-state';
 import TolarAccountState from "@/providers/tolar/libs/accounts-state";
 import SubstrateAccountState from '@/providers/polkadot/libs/accounts-state';
-import { BaseNetwork, SubNetworkOptions } from '@/types/base-network';
+import {BaseNetwork, SubNetworkOptions} from '@/types/base-network';
 import Notification from '@action/components/notification/index.vue';
 import Tooltip from '@action/components/tooltip/index.vue';
 import IconCopy from '@action/icons/header/copy_icon.vue';
@@ -83,8 +83,9 @@ import IconDisconnect from '@action/icons/header/disconnect_icon.vue';
 import IconExternal from '@action/icons/header/external-icon.vue';
 import IconQr from '@action/icons/header/qr_icon.vue';
 import SwitchArrow from '@action/icons/header/switch_arrow.vue';
-import { PropType, computed, onMounted, ref, watch } from 'vue';
+import {computed, onMounted, PropType, ref, watch} from 'vue';
 import SubnetList from './subnet-list.vue';
+import {ProviderName} from "@/types/provider.ts";
 
 const isCopied = ref(false);
 const domainState = new DomainState();
@@ -122,7 +123,7 @@ const props = defineProps({
   network: {
     type: Object as PropType<BaseNetwork>,
     default: () => ({}),
-  },
+  }
 });
 const emit = defineEmits<{
   (e: 'toggle:deposit'): void;
@@ -137,7 +138,10 @@ const showAccounts = () => {
   props.toggleAccounts();
 };
 const externalLink = computed(() => {
-  return props.network.blockExplorerAddr.replace('[[address]]', props.address);
+  const address =  props.network.provider === ProviderName.tolar ?
+    props.address.slice(2) : props.address;
+
+  return props.network.blockExplorerAddr.replace('[[address]]', address);
 });
 const toggleNotification = () => {
   isCopied.value = !isCopied.value;
