@@ -149,6 +149,8 @@ const close = () => {
   }
 };
 
+const errorMsgReg = /gRPC\serror\scode:\s\d+;\smessage:\s(.+);\sdetails:.*/g;
+
 const sendAction = async () => {
   const tolarNetwork = network.value as TolarNetwork;
 
@@ -198,7 +200,12 @@ const sendAction = async () => {
 
     txHash = await sendRawTransaction(tolTxBody, account.value!, tolarAPI);
   } catch (e: unknown) {
-    const error = logError(e);
+    let error = logError(e);
+
+    const res = errorMsgReg.exec(error);
+    if(res !== null && res.length === 2) {
+      error = res[1];
+    }
 
     txActivity.status = ActivityStatus.failed;
     await activityState.addActivities([txActivity], {

@@ -8,11 +8,11 @@
 
     <div class="restore-wallet__buttons">
       <base-button title="Use recovery phrase" :click="restoreAction" />
-      <base-button
-        title="Other options"
-        :no-background="true"
-        :click="otherAction"
-      />
+<!--      <base-button-->
+<!--        title="Other options"-->
+<!--        :no-background="true"-->
+<!--        :click="otherAction"-->
+<!--      />-->
     </div>
   </div>
 </template>
