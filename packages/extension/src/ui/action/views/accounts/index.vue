@@ -283,10 +283,11 @@ const displayActive = computed(() => {
   return filterAndSortAccounts(props.accountInfo.activeAccounts);
 });
 const displayInactive = computed(() => {
-  if (!searchInput.value || searchInput.value === '') {
-    return props.accountInfo.inactiveAccounts;
-  }
-  return filterAndSortAccounts(props.accountInfo.inactiveAccounts);
+  return [];
+  // if (!searchInput.value || searchInput.value === '') {
+  //   return props.accountInfo.inactiveAccounts;
+  // }
+  // return filterAndSortAccounts(props.accountInfo.inactiveAccounts);
 });
 </script>
 
