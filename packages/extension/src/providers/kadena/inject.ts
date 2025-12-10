@@ -50,8 +50,8 @@ const injectDocument = (
   document: EnkryptWindow | Window,
   options: ProviderOptions,
 ): void => {
-  const provider = new Provider(options);
-  document['enkrypt']['providers'][options.name] = provider;
+  // const provider = new Provider(options);
+  // document['enkrypt']['providers'][options.name] = provider;
 };
 
 export default injectDocument;

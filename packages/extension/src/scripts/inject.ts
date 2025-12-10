@@ -43,4 +43,4 @@ window.addEventListener('beforeunload', () => {
   );
 });
 
-console.info('Enkrypt: Hello from IN');
+console.info('Taquin: Hello from IN');

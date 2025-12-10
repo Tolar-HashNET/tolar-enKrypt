@@ -143,40 +143,40 @@ const injectDocument = (
   document: EnkryptWindow | Window,
   options: ProviderOptions,
 ): void => {
-  const provider = new Provider(options);
-  const proxiedProvider = new Proxy(provider, ProxyHandler);
-  document['enkrypt']['providers'][options.name] = provider;
-  if (__IS_OPERA__) {
-    document[options.name] = proxiedProvider; // Opera expects you to inject immediately and their wallet switcher will handle conflicts
-  }
-  options
-    .sendMessageHandler(
-      ProviderName.enkrypt,
-      JSON.stringify({ method: InternalMethods.getSettings, params: [] }),
-    )
-    .then((settings: SettingsType) => {
-      if (!settings.evm.inject.disabled)
-        document[options.name] = proxiedProvider; //proxy is needed due to web3js 1.3.0 callbackify issue. Used in superrare
-    });
-  const ENKRYPT_UUID_V4 = randomUUID();
-  // EIP-6963
-  const eip6963AnnounceProvider = () => {
-    const info: EIP6963ProviderInfo = {
-      uuid: ENKRYPT_UUID_V4,
-      icon: `data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODEiIGhlaWdodD0iODEiIHZpZXdCb3g9IjAgMCA4MSA4MSIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0xNy4wMDU3IDE3LjAwNjJDMTguOTMwMyAxNS4wODE2IDIxLjU0MDUgMTQuMDAwNCAyNC4yNjIyIDE0LjAwMDRMNjcuMzI5NiAxNFYyMS44NzQxQzY3LjMyOTYgMjMuODMwNSA2Ni41NTIzIDI1LjcwNjcgNjUuMTY5IDI3LjA5QzYzLjc4NTcgMjguNDczMyA2MS45MDk1IDI5LjI1MDQgNTkuOTUzMiAyOS4yNTA0SDM5LjcwNDVDMzYuOTgyOCAyOS4yNTA0IDM0LjM3MjYgMzAuMzMxNiAzMi40NDggMzIuMjU2MUMzMC41MjM1IDM0LjE4MDcgMjkuNDQyMyAzNi43OTA5IDI5LjQ0MjMgMzkuNTEyNlY0Mi4xMjQyQzI5LjQ0MjMgNDQuODQ1OSAzMC41MjM1IDQ3LjQ1NjEgMzIuNDQ4IDQ5LjM4MDZDMzQuMzcyNiA1MS4zMDUxIDM2Ljk4MjggNTIuMzg2MyAzOS43MDQ1IDUyLjM4NjNINTkuOTUzMkM2MS45MDk1IDUyLjM4NjMgNjMuNzg1NyA1My4xNjM1IDY1LjE2OSA1NC41NDY4QzY2LjU1MjMgNTUuOTMwMSA2Ny4zMjk2IDU3LjgwNjMgNjcuMzI5NiA1OS43NjI2VjY3LjMzSDI0LjI2MjJDMjEuNTQwNSA2Ny4zMyAxOC45MzAzIDY2LjI0ODggMTcuMDA1NyA2NC4zMjQzQzE1LjA4MTIgNjIuMzk5NyAxNCA1OS43ODk1IDE0IDU3LjA2NzhWMjQuMjYyNkMxNCAyMS41NDA5IDE1LjA4MTIgMTguOTMwNyAxNy4wMDU3IDE3LjAwNjJaTTQwLjE0NzkgMzMuNTQyM0g2MC45MTU3QzY0LjQ1OCAzMy41NDIzIDY3LjMyOTUgMzYuNDEzOCA2Ny4zMjk1IDM5Ljk1NjFWNDEuNjgxNkM2Ny4zMjk1IDQ1LjIyMzggNjQuNDU4IDQ4LjA5NTQgNjAuOTE1NyA0OC4wOTU0SDQwLjE0NzlDMzYuNjA1NyA0OC4wOTU0IDMzLjczNDEgNDUuMjIzOCAzMy43MzQxIDQxLjY4MTZWMzkuOTU2MUMzMy43MzQxIDM2LjQxMzggMzYuNjA1NyAzMy41NDIzIDQwLjE0NzkgMzMuNTQyM1oiIGZpbGw9InVybCgjcGFpbnQwX2xpbmVhcl8yODdfMjM1OSkiLz4KPGRlZnM+CjxsaW5lYXJHcmFkaWVudCBpZD0icGFpbnQwX2xpbmVhcl8yODdfMjM1OSIgeDE9IjE5LjM2MDIiIHkxPSIxNCIgeDI9IjU2Ljc2OTYiIHkyPSI2OS44MDA1IiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+CjxzdG9wIHN0b3AtY29sb3I9IiNDNTQ5RkYiLz4KPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjNjU0QkZGIi8+CjwvbGluZWFyR3JhZGllbnQ+CjwvZGVmcz4KPC9zdmc+Cg==`,
-      name: 'Enkrypt',
-      rdns: 'com.enkrypt',
-    };
-    document.dispatchEvent(
-      new document.CustomEvent(EIP6963Events.announce, {
-        detail: { info, provider: proxiedProvider },
-      }),
-    );
-  };
-  document.addEventListener(EIP6963Events.request, () => {
-    eip6963AnnounceProvider();
-  });
-  eip6963AnnounceProvider();
+  // const provider = new Provider(options);
+  // const proxiedProvider = new Proxy(provider, ProxyHandler);
+  // document['enkrypt']['providers'][options.name] = provider;
+  // if (__IS_OPERA__) {
+  //   document[options.name] = proxiedProvider; // Opera expects you to inject immediately and their wallet switcher will handle conflicts
+  // }
+  // options
+  //   .sendMessageHandler(
+  //     ProviderName.enkrypt,
+  //     JSON.stringify({ method: InternalMethods.getSettings, params: [] }),
+  //   )
+  //   .then((settings: SettingsType) => {
+  //     if (!settings.evm.inject.disabled)
+  //       document[options.name] = proxiedProvider; //proxy is needed due to web3js 1.3.0 callbackify issue. Used in superrare
+  //   });
+  // const ENKRYPT_UUID_V4 = randomUUID();
+  // // EIP-6963
+  // const eip6963AnnounceProvider = () => {
+  //   const info: EIP6963ProviderInfo = {
+  //     uuid: ENKRYPT_UUID_V4,
+  //     icon: `data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODEiIGhlaWdodD0iODEiIHZpZXdCb3g9IjAgMCA4MSA4MSIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0xNy4wMDU3IDE3LjAwNjJDMTguOTMwMyAxNS4wODE2IDIxLjU0MDUgMTQuMDAwNCAyNC4yNjIyIDE0LjAwMDRMNjcuMzI5NiAxNFYyMS44NzQxQzY3LjMyOTYgMjMuODMwNSA2Ni41NTIzIDI1LjcwNjcgNjUuMTY5IDI3LjA5QzYzLjc4NTcgMjguNDczMyA2MS45MDk1IDI5LjI1MDQgNTkuOTUzMiAyOS4yNTA0SDM5LjcwNDVDMzYuOTgyOCAyOS4yNTA0IDM0LjM3MjYgMzAuMzMxNiAzMi40NDggMzIuMjU2MUMzMC41MjM1IDM0LjE4MDcgMjkuNDQyMyAzNi43OTA5IDI5LjQ0MjMgMzkuNTEyNlY0Mi4xMjQyQzI5LjQ0MjMgNDQuODQ1OSAzMC41MjM1IDQ3LjQ1NjEgMzIuNDQ4IDQ5LjM4MDZDMzQuMzcyNiA1MS4zMDUxIDM2Ljk4MjggNTIuMzg2MyAzOS43MDQ1IDUyLjM4NjNINTkuOTUzMkM2MS45MDk1IDUyLjM4NjMgNjMuNzg1NyA1My4xNjM1IDY1LjE2OSA1NC41NDY4QzY2LjU1MjMgNTUuOTMwMSA2Ny4zMjk2IDU3LjgwNjMgNjcuMzI5NiA1OS43NjI2VjY3LjMzSDI0LjI2MjJDMjEuNTQwNSA2Ny4zMyAxOC45MzAzIDY2LjI0ODggMTcuMDA1NyA2NC4zMjQzQzE1LjA4MTIgNjIuMzk5NyAxNCA1OS43ODk1IDE0IDU3LjA2NzhWMjQuMjYyNkMxNCAyMS41NDA5IDE1LjA4MTIgMTguOTMwNyAxNy4wMDU3IDE3LjAwNjJaTTQwLjE0NzkgMzMuNTQyM0g2MC45MTU3QzY0LjQ1OCAzMy41NDIzIDY3LjMyOTUgMzYuNDEzOCA2Ny4zMjk1IDM5Ljk1NjFWNDEuNjgxNkM2Ny4zMjk1IDQ1LjIyMzggNjQuNDU4IDQ4LjA5NTQgNjAuOTE1NyA0OC4wOTU0SDQwLjE0NzlDMzYuNjA1NyA0OC4wOTU0IDMzLjczNDEgNDUuMjIzOCAzMy43MzQxIDQxLjY4MTZWMzkuOTU2MUMzMy43MzQxIDM2LjQxMzggMzYuNjA1NyAzMy41NDIzIDQwLjE0NzkgMzMuNTQyM1oiIGZpbGw9InVybCgjcGFpbnQwX2xpbmVhcl8yODdfMjM1OSkiLz4KPGRlZnM+CjxsaW5lYXJHcmFkaWVudCBpZD0icGFpbnQwX2xpbmVhcl8yODdfMjM1OSIgeDE9IjE5LjM2MDIiIHkxPSIxNCIgeDI9IjU2Ljc2OTYiIHkyPSI2OS44MDA1IiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+CjxzdG9wIHN0b3AtY29sb3I9IiNDNTQ5RkYiLz4KPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjNjU0QkZGIi8+CjwvbGluZWFyR3JhZGllbnQ+CjwvZGVmcz4KPC9zdmc+Cg==`,
+  //     name: 'Enkrypt',
+  //     rdns: 'com.enkrypt',
+  //   };
+  //   document.dispatchEvent(
+  //     new document.CustomEvent(EIP6963Events.announce, {
+  //       detail: { info, provider: proxiedProvider },
+  //     }),
+  //   );
+  // };
+  // document.addEventListener(EIP6963Events.request, () => {
+  //   eip6963AnnounceProvider();
+  // });
+  // eip6963AnnounceProvider();
 };
 export default injectDocument;
 

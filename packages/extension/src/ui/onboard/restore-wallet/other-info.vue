@@ -6,7 +6,7 @@
     >
       <h3>Your safety and security is our #1 priority</h3>
       <p>
-        We don't support keystore file and private key imports in Enkrypt, as
+        We don't support keystore file and private key imports in Taquin, as
         they are highly unsafe.
       </p>
       <p>
@@ -16,11 +16,11 @@
       </p>
       <p>
         For maximum security its best to create a new wallet directly in
-        Enkrypt, same as if you just got a new hardware wallet. That way you can
+        Taquin, same as if you just got a new hardware wallet. That way you can
         be sure your keys never leave your device.
       </p>
       <p>
-        If you want to access funds in one of your existing wallets via Enkrypt,
+        If you want to access funds in one of your existing wallets via Taquin,
         the most secure way is to create a new wallet and transfer your ETH and
         Tokens to the new wallet.
       </p>

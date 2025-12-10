@@ -106,7 +106,7 @@ class Changelly extends ProviderClass {
 
     if (!Changelly.isSupported(this.network)) {
       logger.info(
-        `init: Enkrypt does not support Changelly on this network  network=${this.network}`,
+        `init: Taquin does not support Changelly on this network  network=${this.network}`,
       );
       return;
     }
@@ -385,7 +385,7 @@ class Changelly extends ProviderClass {
       )
     ) {
       logger.info(
-        `getQuote: No swap: Enkrypt does not support Changelly on the destination network` +
+        `getQuote: No swap: Taquin does not support Changelly on the destination network` +
           `  dstNetwork=${options.toToken.networkInfo.name}`,
       );
       return null;
@@ -393,7 +393,7 @@ class Changelly extends ProviderClass {
 
     if (!Changelly.isSupported(this.network)) {
       logger.info(
-        `getQuote: No swap: Enkrypt does not support Changelly on the source network` +
+        `getQuote: No swap: Taquin does not support Changelly on the source network` +
           `  srcNetwork=${this.network}`,
       );
       return null;
@@ -636,7 +636,7 @@ class Changelly extends ProviderClass {
 
     if (!Changelly.isSupported(this.network)) {
       logger.info(
-        `getSwap: Enkrypt does not support Changelly on the source network, returning no swap` +
+        `getSwap: Taquin does not support Changelly on the source network, returning no swap` +
           `  srcNetwork=${this.network}`,
       );
       return null;
@@ -648,7 +648,7 @@ class Changelly extends ProviderClass {
       )
     ) {
       logger.info(
-        `getSwap: Enkrypt does not support Changelly on the destination network, returning no swap` +
+        `getSwap: Taquin does not support Changelly on the destination network, returning no swap` +
           `  dstNetwork=${quote.options.toToken.networkInfo.name}`,
       );
       return null;

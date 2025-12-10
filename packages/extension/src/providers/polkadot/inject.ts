@@ -88,22 +88,22 @@ const injectDocument = (
   document: EnkryptWindow | Window,
   options: ProviderOptions,
 ): void => {
-  const provider = new Provider(options);
-  document.injectedWeb3 = document.injectedWeb3 || {};
-  document.injectedWeb3['enkrypt'] = new Proxy(provider, ProxyHandler);
-  options
-    .sendMessageHandler(
-      ProviderName.enkrypt,
-      JSON.stringify({ method: InternalMethods.getSettings, params: [] }),
-    )
-    .then((settings: SettingsType) => {
-      if (settings.substrate.injectPolkadotjs)
-        document.injectedWeb3['polkadot-js'] = new Proxy(
-          provider,
-          ProxyHandler,
-        );
-    });
-  document['enkrypt']['providers'][options.name] = provider;
+  // const provider = new Provider(options);
+  // document.injectedWeb3 = document.injectedWeb3 || {};
+  // document.injectedWeb3['enkrypt'] = new Proxy(provider, ProxyHandler);
+  // options
+  //   .sendMessageHandler(
+  //     ProviderName.enkrypt,
+  //     JSON.stringify({ method: InternalMethods.getSettings, params: [] }),
+  //   )
+  //   .then((settings: SettingsType) => {
+  //     if (settings.substrate.injectPolkadotjs)
+  //       document.injectedWeb3['polkadot-js'] = new Proxy(
+  //         provider,
+  //         ProxyHandler,
+  //       );
+  //   });
+  // document['enkrypt']['providers'][options.name] = provider;
 };
 
 export default injectDocument;

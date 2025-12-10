@@ -3,7 +3,7 @@
     <div class="rate__overlay" @click="close" />
     <div class="rate__wrap">
       <div class="rate__header">
-        <h2>New Enkrypt version available</h2>
+        <h2>New Taquin version available</h2>
         <a class="rate__close" @click="close">
           <close-icon />
         </a>

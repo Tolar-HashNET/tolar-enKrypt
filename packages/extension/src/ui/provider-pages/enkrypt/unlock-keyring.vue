@@ -6,7 +6,7 @@
       </template>
       <template #content>
         <h2>Signing Request</h2>
-        <p class="unlock-keyring__desc">Unlock Enkrypt to start signing</p>
+        <p class="unlock-keyring__desc">Unlock Taquin to start signing</p>
         <lock-screen-password-input
           :is-error="isError"
           :value="password"

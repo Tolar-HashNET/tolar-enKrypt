@@ -11,12 +11,11 @@ function injectScript() {
     scriptTag.src = injectURL;
     scriptTag.id = InjectedIDs.main;
     scriptTag.onload = function () {
-      console.info('Enkrypt: Hello from CS');
       container.removeChild(scriptTag);
     };
     container.insertBefore(scriptTag, container.children[0]);
   } catch (error) {
-    console.error('Enkrypt: Provider injection failed.', error);
+    console.error('Taquin: Provider injection failed.', error);
   }
 }
 

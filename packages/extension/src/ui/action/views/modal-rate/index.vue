@@ -3,7 +3,7 @@
     <div class="rate__overlay" @click="close()" />
     <div class="rate__wrap">
       <div class="rate__header">
-        <h2>Enjoying Enkrypt so far?</h2>
+        <h2>Enjoying Taquin so far?</h2>
         <a class="rate__close" @click="close()">
           <close-icon />
         </a>

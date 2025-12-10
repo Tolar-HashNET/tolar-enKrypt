@@ -129,15 +129,15 @@ const injectDocument = (
   document: EnkryptWindow | Window,
   options: ProviderOptions,
 ): void => {
-  const provider = new Provider(options);
-  options
-    .sendMessageHandler(
-      ProviderName.enkrypt,
-      JSON.stringify({ method: InternalMethods.getSettings, params: [] }),
-    )
-    .then((settings: SettingsType) => {
-      if (settings.btc.injectUnisat) document['unisat'] = provider;
-    });
-  document['enkrypt']['providers'][options.name] = provider;
+  // const provider = new Provider(options);
+  // options
+  //   .sendMessageHandler(
+  //     ProviderName.enkrypt,
+  //     JSON.stringify({ method: InternalMethods.getSettings, params: [] }),
+  //   )
+  //   .then((settings: SettingsType) => {
+  //     if (settings.btc.injectUnisat) document['unisat'] = provider;
+  //   });
+  // document['enkrypt']['providers'][options.name] = provider;
 };
 export default injectDocument;

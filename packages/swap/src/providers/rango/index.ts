@@ -383,7 +383,7 @@ class Rango extends ProviderClass {
 
     if (!supportedNetworkInfo) {
       logger.info(
-        `init: Network not supported on Enkrypt+Rango: ${this.network}`,
+        `init: Network not supported on Taquin+Rango: ${this.network}`,
       );
       return;
     }
@@ -598,7 +598,7 @@ class Rango extends ProviderClass {
       if (!fromNetworkInfo) {
         logger.info(
           "getRangoSwap: No swap:" +
-            ` Enkrypt does not support Rango swap on the source network` +
+            ` Taquin does not support Rango swap on the source network` +
             `  fromNetwork=${this.network}`,
         );
         return null;
@@ -611,7 +611,7 @@ class Rango extends ProviderClass {
       if (!toNetworkInfo) {
         logger.info(
           "getRangoSwap: No swap:" +
-            ` Enkrypt does not support Rango swap on the destination network` +
+            ` Taquin does not support Rango swap on the destination network` +
             `  fromNetwork=${this.network}`,
         );
         return null;

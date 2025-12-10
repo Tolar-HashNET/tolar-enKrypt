@@ -69,6 +69,10 @@ const formattedPrivateKey = computed(() => privKey.value.trim());
 
 const isValidKey = computed(() => {
   try {
+    if(formattedPrivateKey.value === "") {
+      return false;
+    }
+
     if (props.network.provider === ProviderName.ethereum || props.network.provider === ProviderName.tolar) {
       const buffer = hexToBuffer(formattedPrivateKey.value);
       new Wallet(buffer);

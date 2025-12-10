@@ -29,7 +29,7 @@
           </a>
           <div v-show="isOpenMore" ref="dropdown" class="app__menu-dropdown">
             <a class="app__menu-dropdown-link" @click="lockAction">
-              <hold-icon /> <span>Lock Enkrypt</span>
+              <hold-icon /> <span>Lock Taquin</span>
             </a>
             <a class="app__menu-dropdown-link" @click="settingsAction">
               <settings-icon /> <span>Settings</span>

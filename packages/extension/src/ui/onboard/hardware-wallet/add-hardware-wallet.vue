@@ -2,7 +2,7 @@
   <div class="add-hardware-wallet">
     <hardware-icon />
     <h3>Add hardware wallet account</h3>
-    <p>Select a hardware wallet you'd like to use with Enkrypt.</p>
+    <p>Select a hardware wallet you'd like to use with Taquin.</p>
 
     <router-link
       v-if="isLedgerSupported"

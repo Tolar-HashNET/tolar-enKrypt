@@ -43,8 +43,7 @@ const injectDocument = (
   document: EnkryptWindow | Window,
   options: ProviderOptions
 ): void => {
-  const provider = new Provider(options);
-  document["enkrypt"]["providers"][options.name] = provider;
+  document.taquin.tolar = new Provider(options);
 };
 
 export default injectDocument;

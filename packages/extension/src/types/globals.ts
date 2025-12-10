@@ -7,5 +7,8 @@ export interface EnkryptWindow {
     };
     settings: SettingsType;
   };
+  taquin: {
+    tolar: any;
+  };
   [key: string]: any;
 }
