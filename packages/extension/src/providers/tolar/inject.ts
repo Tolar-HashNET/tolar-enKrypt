@@ -1,9 +1,11 @@
+
 import EventEmitter from "eventemitter3";
 import {handleIncomingMessage} from "./libs/message-handler";
 import {EthereumRequest, EthereumResponse} from "@/providers/ethereum/types";
 import {ProviderInterface, ProviderName, ProviderOptions, ProviderType, SendMessageHandler,} from "@/types/provider";
 import {EnkryptWindow} from "@/types/globals";
 import {TolarNetworks} from "./types";
+
 
 export class Provider extends EventEmitter implements ProviderInterface {
   connected: boolean;
@@ -43,7 +45,7 @@ const injectDocument = (
   document: EnkryptWindow | Window,
   options: ProviderOptions
 ): void => {
-  document.taquin.tolar = new Provider(options);
+  document["taquin"][options.name] = new Provider(options);
 };
 
 export default injectDocument;

@@ -96,32 +96,25 @@
 <script setup lang="ts">
 import DomainState from '@/libs/domain-state';
 import PublicKeyRing from '@/libs/keyring/public-keyring';
-import { sendToBackgroundFromAction } from '@/libs/messenger/extension';
+import {sendToBackgroundFromAction} from '@/libs/messenger/extension';
 import NetworksState from '@/libs/networks-state';
-import {
-  getAccountsByNetworkName,
-  getOtherSigners,
-} from '@/libs/utils/accounts';
+import {getAccountsByNetworkName, getOtherSigners,} from '@/libs/utils/accounts';
 import ModalNewVersion from './views/modal-new-version/index.vue';
-import {
-  DEFAULT_EVM_NETWORK,
-  getAllNetworks,
-  getNetworkByName,
-} from '@/libs/utils/networks';
+import {DEFAULT_EVM_NETWORK, getAllNetworks, getNetworkByName,} from '@/libs/utils/networks';
 import openOnboard from '@/libs/utils/open-onboard';
 import BTCAccountState from '@/providers/bitcoin/libs/accounts-state';
 import EVMAccountState from '@/providers/ethereum/libs/accounts-state';
 import SolAccountState from '@/providers/solana/libs/accounts-state';
-import { MessageMethod } from '@/providers/ethereum/types';
-import { EvmNetwork } from '@/providers/ethereum/types/evm-network';
-import { MessageMethod as KadenaMessageMethod } from '@/providers/kadena/types';
-import { MessageMethod as TolarMessageMethod } from '@/providers/tolar/types';
-import { BaseNetwork } from '@/types/base-network';
-import { InternalMethods } from '@/types/messenger';
-import { EnkryptAccount, NetworkNames } from '@enkryptcom/types';
-import { fromBase } from '@enkryptcom/utils';
-import { computed, onMounted, ref } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import {MessageMethod} from '@/providers/ethereum/types';
+import {EvmNetwork} from '@/providers/ethereum/types/evm-network';
+import {MessageMethod as KadenaMessageMethod} from '@/providers/kadena/types';
+import {MessageMethod as TolarMessageMethod} from '@/providers/tolar/types';
+import {BaseNetwork} from '@/types/base-network';
+import {InternalMethods} from '@/types/messenger';
+import {EnkryptAccount, NetworkNames} from '@enkryptcom/types';
+import {fromBase} from '@enkryptcom/utils';
+import {computed, onMounted, ref} from 'vue';
+import {useRoute, useRouter} from 'vue-router';
 import Browser from 'webextension-polyfill';
 import AccountsHeader from './components/accounts-header/index.vue';
 import AppMenu from './components/app-menu/index.vue';
@@ -132,19 +125,19 @@ import HoldIcon from './icons/common/hold-icon.vue';
 import LogoMin from './icons/common/logo-min.vue';
 import ManageNetworksIcon from './icons/common/manage-networks-icon.vue';
 import SettingsIcon from './icons/common/settings-icon.vue';
-import { AccountsHeaderData } from './types/account';
+import {AccountsHeaderData} from './types/account';
 import AddNetwork from './views/add-network/index.vue';
 import ModalRate from './views/modal-rate/index.vue';
 import Settings from './views/settings/index.vue';
-import { KadenaNetwork } from '@/providers/kadena/types/kadena-network';
-import { EnkryptProviderEventMethods, ProviderName } from '@/types/provider';
-import { onClickOutside } from '@vueuse/core';
+import {KadenaNetwork} from '@/providers/kadena/types/kadena-network';
+import {EnkryptProviderEventMethods, ProviderName} from '@/types/provider';
+import {onClickOutside} from '@vueuse/core';
 import RateState from '@/libs/rate-state';
 import SwapLookingAnimation from '@action/icons/swap/swap-looking-animation.vue';
-import { trackBuyEvents, trackNetworkSelected } from '@/libs/metrics';
-import { getLatestEnkryptVersion } from '@action/utils/browser';
-import { gt as semverGT } from 'semver';
-import { BuyEventType, NetworkChangeEvents } from '@/libs/metrics/types';
+import {trackBuyEvents, trackNetworkSelected} from '@/libs/metrics';
+import {getLatestEnkryptVersion} from '@action/utils/browser';
+import {gt as semverGT} from 'semver';
+import {BuyEventType, NetworkChangeEvents} from '@/libs/metrics/types';
 import {isEqual} from "lodash";
 
 const domainState = new DomainState();
@@ -410,7 +403,7 @@ const setNetwork = async (network: BaseNetwork) => {trackNetworkSelected(Network
 };
 
 const setActiveBalances = async (network: BaseNetwork) => {
-  if(network.api) {
+  if(network.api && network.provider === ProviderName.tolar) {
     try {
       const api = await network.api();
       const thisNetworkName = currentNetwork.value.name;

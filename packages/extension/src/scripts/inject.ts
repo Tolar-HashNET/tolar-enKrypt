@@ -3,15 +3,17 @@ import {
   windowOnMessage,
   providerSendMessage,
 } from '@/libs/messenger/window';
+
 import { ProviderName, ProviderType } from '@/types/provider';
 import TolarProvider from "@/providers/tolar/inject";
 
 import { InternalMethods } from '@/types/messenger';
 
+
 setWindowNamespace();
 
-(window as Window).enkrypt = {
-  providers: {},
+(window as Window).taquin = {
+  tolar: {},
   settings: {},
 };
 
@@ -26,7 +28,7 @@ const loadInjectedProviders = () => {
 loadInjectedProviders();
 
 windowOnMessage(async (msg): Promise<void> => {
-  window['enkrypt']['providers'][msg.provider].handleMessage(msg.message);
+  window["taquin"][msg.provider].handleMessage(msg.message);
 });
 
 window.addEventListener('load', () => {

@@ -1,6 +1,5 @@
 import type { Provider as InjectedProvider } from "../inject";
 import { NetworkNames } from "@enkryptcom/types";
-import { NetworkId } from "@tolar/web3-plugin-tolar";
 
 export { InjectedProvider };
 
@@ -29,9 +28,9 @@ export enum EmitEvent {
   disconnect = 'disconnect',
 }
 
-export const TolarRpcEndpoints = new Map<NetworkId, string>([
-  [NetworkId.Local, "http://127.0.0.1:8200/jsonrpc"],
-  [NetworkId.Stagenet, "https://jsongw.stagenet.tolar.io/jsonrpc"],
-  [NetworkId.Testnet, "https://jsongw.testnet.tolar.io/jsonrpc"],
-  [NetworkId.Mainnet, "https://jsongw.mainnet.tolar.io/jsonrpc"]
+export const TolarRpcEndpoints = new Map<number, string>([
+  [0, "http://127.0.0.1:8200/jsonrpc"],
+  [1, "https://jsongw.mainnet.tolar.io/jsonrpc"],
+  [2, "https://jsongw.testnet.tolar.io/jsonrpc"],
+  [3, "https://jsongw.staging.tolar.io/jsonrpc"]
 ]);
