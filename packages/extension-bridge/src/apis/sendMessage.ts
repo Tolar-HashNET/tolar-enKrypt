@@ -34,16 +34,20 @@ export async function sendMessage<
     typeof destination === "string" ? parseEndpoint(destination) : destination;
   const errFn = "Bridge#sendMessage ->";
 
-  if (!endpoint.context)
+  if (!endpoint.context) {
     throw new TypeError(
       `${errFn} Destination must be any one of known destinations`,
     );
+  }
+
   if (context === "background") {
     const { context: dest, tabId: destTabId } = endpoint;
-    if (dest !== "background" && !destTabId)
+
+    if (dest !== "background" && !destTabId) {
       throw new TypeError(
         `${errFn} When sending messages from background page, use @tabId syntax to target specific tab`,
       );
+    }
   }
 
   return new Promise<GetReturnType<K, ReturnType>>((resolve, reject) => {

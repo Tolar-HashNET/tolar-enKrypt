@@ -140,16 +140,14 @@ export const routeMessage = (
   if (destination.context) {
     if (context === "window") {
       routeMessageThroughWindow(window, message);
-    } else if (
-      context === "content-script" &&
-      destination.context === "window"
-    ) {
+    } else if (context === "content-script" && destination.context === "window") {
       message.destination = null;
       routeMessageThroughWindow(window, message);
-    } else if (
-      ["devtools", "content-script", "popup", "options"].includes(context)
-    ) {
-      if (destination.context === "background") message.destination = null;
+    } else if (["devtools", "content-script", "popup", "options"].includes(context)) {
+      if (destination.context === "background") {
+        message.destination = null;
+      }
+
       port.postMessage(message);
     } else if (context === "background") {
       const {
@@ -157,6 +155,7 @@ export const routeMessage = (
         tabId: destTabId,
         frameId: destFrameId,
       } = destination;
+
       const { tabId: srcTabId } = origin;
 
       // remove the destination in case the message isn't going to `window`; it'll be forwarded to either `content-script` or `devtools`...
@@ -183,7 +182,9 @@ export const routeMessage = (
 
       const destPort = portMap.get(resolvedDestination);
 
-      if (destPort) destPort.postMessage(message);
+      if (destPort)
+        destPort.postMessage(message);
+
       else messageQueue.add({ resolvedDestination, message });
     }
   }
@@ -197,7 +198,8 @@ const assertInternalMessage: (x: unknown) => asserts x = (
 };
 
 async function handleWindowOnMessage({ data, ports }: MessageEvent) {
-  if (context === "content-script" && !isWindowMessagingAllowed) return;
+  if (context === "content-script" && !isWindowMessagingAllowed)
+    return;
 
   if (
     data.cmd === "__crx_bridge_verify_listening" &&

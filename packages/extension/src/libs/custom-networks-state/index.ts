@@ -13,7 +13,6 @@ export default class CustomNetworksState {
   }
 
   async addCustomNetwork(options: CustomNetworkOptions): Promise<string> {
-    console.error("Adding custom network: ", options);
     const state: IState = await this.storage.get(
       StorageKeys.customNetworksInfo,
     );

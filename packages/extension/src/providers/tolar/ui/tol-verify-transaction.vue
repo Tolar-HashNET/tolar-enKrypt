@@ -173,6 +173,7 @@ onBeforeMount(async () => {
 
     FiatValue.value = "0";
     const txBody = TolTxBody.fromRpcTxRequest(Request.value.params![0] as RpcTxRequest);
+
     tx.value = txBody;
     TxValue.value = txBody.value.toString();
     TxFee.value = (txBody.gas * txBody.gasPrice).toString();

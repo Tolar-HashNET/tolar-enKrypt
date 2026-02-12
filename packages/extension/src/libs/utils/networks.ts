@@ -15,6 +15,7 @@ import Kadena from '@/providers/kadena/networks/kadena';
 import Solana from '@/providers/solana/networks/solana';
 import Tolar from "@/providers/tolar/networks/tolar-mainnet";
 import {CustomTolarNetwork} from "@/providers/tolar/networks/custom-tolar-network.ts";
+import { TolarNetwork } from '@/providers/tolar/types/tolar-network.ts';
 
 const providerNetworks: Record<ProviderName, Record<string, BaseNetwork>> = {
   [ProviderName.ethereum]: EthereumNetworks,
@@ -26,14 +27,14 @@ const providerNetworks: Record<ProviderName, Record<string, BaseNetwork>> = {
   [ProviderName.enkrypt]: {},
 };
 
-const getAllNetworks = async (): Promise<BaseNetwork[]> => {
+const getAllNetworks = async (): Promise<TolarNetwork[]> => {
   const customNetworksState = new CustomNetworksState();
 
   const customNetworks = (
     await customNetworksState.getAllCustomNetworks()
   ).map(options => new CustomTolarNetwork(options));
 
-  return (Object.values(TolarNetworks) as BaseNetwork[]).concat(customNetworks);
+  return Object.values(TolarNetworks).concat(customNetworks);
 };
 
 const getNetworkByName = async (
@@ -41,6 +42,7 @@ const getNetworkByName = async (
 ): Promise<BaseNetwork | undefined> => {
   return (await getAllNetworks()).find(net => net.name === name);
 };
+
 const getProviderNetworkByName = async (
   provider: ProviderName,
   networkName: string,
@@ -58,6 +60,11 @@ const getProviderNetworkByName = async (
 
   return networks.find(net => net.name === networkName);
 };
+
+const getNetworkById = async (networkId: number): Promise<BaseNetwork | undefined> => {
+  return (await getAllNetworks()).find(net => net.networkId === networkId);
+};
+
 const DEFAULT_EVM_NETWORK_NAME = NetworkNames.Ethereum;
 const DEFAULT_SUBSTRATE_NETWORK_NAME = NetworkNames.Polkadot;
 const DEFAULT_BTC_NETWORK_NAME = NetworkNames.Bitcoin;
@@ -87,6 +94,7 @@ export {
   getAllNetworks,
   getNetworkByName,
   getProviderNetworkByName,
+  getNetworkById,
   DEFAULT_EVM_NETWORK_NAME,
   DEFAULT_SUBSTRATE_NETWORK_NAME,
   DEFAULT_BTC_NETWORK_NAME,

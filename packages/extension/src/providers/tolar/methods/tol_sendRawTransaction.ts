@@ -5,6 +5,8 @@ import { WindowPromise } from '@/libs/window-promise';
 import AccountState from '../libs/accounts-state';
 import { ProviderRPCRequest } from '@/types/provider';
 import type { RpcTxRequest } from '@tolar/web3-plugin-tolar'
+import { getNetworkById } from '@/libs/utils/networks.ts';
+import TolarAPI from '@/providers/tolar/libs/api.ts';
 
 const method: MiddlewareFunction = async function (
   this: TolarProvider,
@@ -44,6 +46,40 @@ const method: MiddlewareFunction = async function (
     return res(
       getCustomError(`tol_sendRawTransaction: Sender address from transaction request: ${tx.senderAddress} differs from approved address: ${senderAddress}`),
     );
+  }
+
+  if(tx.networkId === undefined || tx.networkId === null) {
+    tx.networkId = this.network.networkId;
+  }
+
+  if(tx.amount === undefined || tx.amount === null || tx.amount === '') {
+    return res(
+      getCustomError(`tol_sendRawTransaction: amount is missing`),
+    );
+  }
+
+  if(tx.gas === undefined || tx.gas === null || tx.gas === '') {
+    tx.gas = "21000";
+  }
+
+  if(tx.gasPrice === undefined || tx.gasPrice === null || tx.gasPrice === '') {
+    tx.gasPrice = "1";
+  }
+
+  if(tx.data === undefined || tx.data === null) {
+    tx.data = "";
+  }
+
+  if(tx.nonce === undefined || tx.nonce === null || tx.nonce === '') {
+    const network = await getNetworkById(tx.networkId);
+    if(network === undefined) {
+      return res(
+        getCustomError(`tol_sendRawTransaction: Failed to get requested network with id: ${tx.networkId}`),
+      );
+    }
+
+    const api = (await network.api()) as TolarAPI;
+    tx.nonce = await api.getNonce(tx.senderAddress);
   }
 
   const account = await this.KeyRing.getAccount(senderAddress);

@@ -244,6 +244,7 @@ const initIntercoms = () => {
 };
 
 initIntercoms();
+
 export const routeMessage = (
   message: IInternalMessage,
 ): void | Promise<void> => {
@@ -278,8 +279,15 @@ export const routeMessage = (
         context,
       )
     ) {
-      if (destination.context === "background") message.destination = null;
-      port.postMessage(message);
+      if (destination.context === "background") {
+        message.destination = null;
+      }
+
+      try {
+        port.postMessage(message);
+      } catch (error) {
+        console.error(`postMessage failed with error: ${JSON.stringify(error)}`);
+      }
     } else if (context === "background") {
       const {
         context: destName,
