@@ -5,6 +5,7 @@ import {EthereumRequest, EthereumResponse} from "@/providers/ethereum/types";
 import {ProviderInterface, ProviderName, ProviderOptions, ProviderType, SendMessageHandler,} from "@/types/provider";
 import {EnkryptWindow} from "@/types/globals";
 import {TolarNetworks} from "./types";
+import type { RpcTxRequest } from '@tolar/web3-plugin-tolar'
 
 
 export class Provider extends EventEmitter implements ProviderInterface {
@@ -31,6 +32,60 @@ export class Provider extends EventEmitter implements ProviderInterface {
       JSON.stringify(request)
     )) as EthereumResponse;
   }
+
+  // Accounts
+
+  requestAccounts = async () => {
+    return this.request({
+      method: "tol_requestAccounts",
+    });
+  };
+
+  getAccounts = async () => {
+    return this.request({
+      method: "tol_getAccounts",
+    });
+  };
+
+  // Balance
+
+  getCurrentBalance = async () => {
+    return this.request({
+      method: "tol_getCurrentBalance",
+    });
+  };
+
+  // Network
+
+  getNetwork = async () => {
+  return this.request({
+    method: "tol_getNetwork",
+  });
+};
+
+  switchNetwork = async (network: string) => {
+    return this.request({
+      method: "tol_switchNetwork",
+      params: [network],
+    });
+  };
+
+// Transactions
+sendRawTransaction = async (tx: RpcTxRequest) => {
+  return this.request({
+    method: "tol_sendRawTransaction",
+    params: [tx],
+  });
+};
+
+
+// Signing
+signMessage = async (message: string) => {
+  return this.request({
+    method: "tol_signMessage",
+    params: [message],
+  });
+};
 
   isConnected(): boolean {
     return this.connected;

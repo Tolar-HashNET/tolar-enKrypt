@@ -4,6 +4,7 @@ import tolSwitchNetwork from "./tol_switchNetwork";
 import tolSendRawTransaction from "./tol_sendRawTransaction";
 import tolGetCurrentBalance from "./tol_getCurrentBalance.ts";
 import tolSignMessage from "./tol_signMessage.ts";
+import tolGetNetwork from "./tol_getNetwork";
 
 export default [
   tolGetAccounts,
@@ -11,5 +12,6 @@ export default [
   tolSwitchNetwork,
   tolSendRawTransaction,
   tolGetCurrentBalance,
-  tolSignMessage
+  tolSignMessage,
+  tolGetNetwork
 ];

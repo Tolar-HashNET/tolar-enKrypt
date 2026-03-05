@@ -32,5 +32,5 @@ export const TolarRpcEndpoints = new Map<number, string>([
   [0, "http://127.0.0.1:8200/jsonrpc"],
   [1, "https://jsongw.mainnet.tolar.io/jsonrpc"],
   [2, "https://jsongw.testnet.tolar.io/jsonrpc"],
-  [3, "https://jsongw.staging.tolar.io/jsonrpc"]
+  [3, "https://jsongw.stagenet.tolar.io/jsonrpc"]
 ]);
