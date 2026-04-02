@@ -83,6 +83,13 @@ class DomainState {
     if (!allStates[domain]) return {};
     else return allStates[domain];
   }
+
+  async setStateByDomain(domain: string, state: IState): Promise<void> {
+  const allStates = await this.getAllStates();
+  allStates[domain] = state;
+  await this.#storage.set(StorageKeys.providerInfo, allStates);
+}
+
   async getState(): Promise<IState> {
     const allStates: Record<string, IState> = await this.getAllStates();
     const domain = await this.getCurrentDomain();

@@ -18,13 +18,13 @@ const method: MiddlewareFunction = async function (
 
   try {
 
-    const domainState = new DomainState();
-    let selectedNetwork = await domainState.getSelectedNetWork();
+   if (!payload.options?.domain) {
+  return res(getCustomError("tol_getNetwork: domain is missing"));
+}
 
-
-    if (!selectedNetwork) {
-      selectedNetwork = "Tol";
-    }
+  const domainState = new DomainState();
+  const state = await domainState.getStateByDomain(payload.options.domain);
+  const selectedNetwork = state.selectedNetwork || "Tol";
 
 
     const networkInfo = getNetworkInfo(selectedNetwork);

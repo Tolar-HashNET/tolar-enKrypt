@@ -22,27 +22,37 @@ const method: MiddlewareFunction = async function (
     return res(getCustomError("tol_switchNetwork: invalid params"));
   }
 
-  const validNetwork = findTolarNetwork(payload.params![0]);
-  if (validNetwork) {
-    await sendToBackgroundFromBackground({
-      message: JSON.stringify({
-        method: InternalMethods.changeNetwork,
-        params: [validNetwork.name],
-      }),
-      provider: validNetwork.provider,
-      tabId: payload.options?.tabId,
-    });
-
-    const domainState = new DomainState();
-    await domainState.setSelectedNetwork(validNetwork.name);
-    return res(null, getNetworkInfo(validNetwork.name));
+  try {
+  if (!payload.options?.domain) {
+    return res(getCustomError("tol_switchNetwork: domain is missing"));
   }
 
-  return res(
-    getCustomError(
-      `tol_switchNetwork: provided network ${payload.params![0]} not supported`
-    )
-  );
-};
+  const validNetwork = findTolarNetwork(payload.params![0]);
+  if (!validNetwork) {
+    return res(
+      getCustomError(
+        `tol_switchNetwork: provided network ${payload.params![0]} not supported`
+      )
+    );
+  }
 
+  await sendToBackgroundFromBackground({
+    message: JSON.stringify({
+      method: InternalMethods.changeNetwork,
+      params: [validNetwork.name],
+    }),
+    provider: validNetwork.provider,
+    tabId: payload.options?.tabId,
+  });
+
+  const domainState = new DomainState();
+  const state = await domainState.getStateByDomain(payload.options.domain);
+  state.selectedNetwork = validNetwork.name;
+  await domainState.setStateByDomain(payload.options.domain, state);
+
+  return res(null, getNetworkInfo(validNetwork.name));
+} catch (err: any) {
+  return res(getCustomError(`tol_switchNetwork: ${err.message}`));
+}
+};
 export default method;
