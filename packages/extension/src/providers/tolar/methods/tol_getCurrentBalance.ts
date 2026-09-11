@@ -21,12 +21,15 @@ const method: MiddlewareFunction = async function (
 
   const accountsState = new AccountState();
   const addresses = await accountsState.getApprovedAddresses(payload.options.domain);
-  if(!addresses.length) {
-    return res(null, '');
-  }
+ if(!addresses.length) {
+  return res(getCustomError('Please connect your wallet first'));
+}
 
   const api = await this.network.api() as TolarAPI;
   const balance = await api.getBalance(addresses[0]);
-  res(null, balance);
+if (balance === null) {
+  return res(getCustomError('Failed to fetch balance. Please check your connection.'));
+}
+res(null, balance);
 };
 export default method;

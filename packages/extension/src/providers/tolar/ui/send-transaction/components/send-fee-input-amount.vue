@@ -5,7 +5,7 @@
       ref="inputRef"
       v-model="feeAmount"
       type="text"
-      placeholder="0"
+      placeholder="21000"
       :style="{ color: !hasEnoughBalance ? 'red' : 'black' }"
       @keypress="onlyNumber"
       @focus="changeFocus"

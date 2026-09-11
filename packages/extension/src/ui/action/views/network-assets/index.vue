@@ -48,12 +48,20 @@
     </div>
 
     <custom-evm-token
-      v-if="showAddCustomTokens"
+      v-if="showAddCustomTokens && !isTolarNetwork"
       :address="props.accountInfo.selectedAccount?.address!"
       :network="props.network as EvmNetwork"
       @update:token-added="addCustomAsset"
       @update:close="toggleShowAddCustomTokens"
     ></custom-evm-token>
+
+    <tol-custom-token
+      v-if="showAddCustomTokens && isTolarNetwork"
+      :address="props.accountInfo.selectedAccount?.address!"
+      :network="props.network as TolarNetwork"
+      @update:token-added="addCustomAsset"
+      @update:close="toggleShowAddCustomTokens"
+    ></tol-custom-token>
   </div>
 </template>
 
@@ -72,7 +80,10 @@ import scrollSettings from '@/libs/utils/scroll-settings';
 import Deposit from '@action/views/deposit/index.vue';
 import BaseButton from '@action/components/base-button/index.vue';
 import CustomEvmToken from './components/custom-evm-token.vue';
+import TolCustomToken from '@/providers/tolar/ui/tol-custom-token.vue';
 import { EvmNetwork } from '@/providers/ethereum/types/evm-network';
+import { TolarNetwork } from '@/providers/tolar/types/tolar-network';
+import { ProviderName } from '@/types/provider';
 import { getCryptoAmount, getFiatAmount } from "@action/utils/amount-calc.ts";
 import { fromBase } from '@enkryptcom/utils';
 import { isEqual } from "lodash";
@@ -102,6 +113,8 @@ const cryptoAmount = ref<string>('0.00');
 const fiatAmount = ref<string>('~');
 
 const selected: string = route.params.id as string;
+
+const isTolarNetwork = computed(() => props.network.provider === ProviderName.tolar);
 
 const updateAmounts = async (balance: string, network: BaseNetwork) => {
   const normalizedBalance = fromBase(balance, props.network.decimals)

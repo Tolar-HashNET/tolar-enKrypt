@@ -86,6 +86,11 @@ signMessage = async (message: string) => {
     params: [message],
   });
 };
+getPublicKey = async () => {
+  return this.request({
+    method: "tol_getPublicKey",
+  });
+};
 
   isConnected(): boolean {
     return this.connected;

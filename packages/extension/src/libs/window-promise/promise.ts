@@ -132,7 +132,14 @@ class WindowPromise {
         return res;
       });
     };
-    return Promise.race([monitorTabs(), executePromise()]);
+      const timeout = (): Promise<InternalOnMessageResponse> =>
+      new Promise(resolve =>
+        setTimeout(
+          () => resolve({ error: getCustomError('Request timed out. Please try again.') }),
+          5 * 60 * 1000,
+        ),
+      );
+    return Promise.race([monitorTabs(), executePromise(), timeout()]);
   }
 }
 export default WindowPromise;

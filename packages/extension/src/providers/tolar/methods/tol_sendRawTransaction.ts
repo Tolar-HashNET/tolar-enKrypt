@@ -32,9 +32,9 @@ const method: MiddlewareFunction = async function (
   const accountsState = new AccountState();
 
   const addresses = await accountsState.getApprovedAddresses(payload.options!.domain);
-  if (!addresses.length) {
-    return res(null, '');
-  }
+if (!addresses.length) {
+  return res(getCustomError('Please connect your wallet first'));
+}
 
   const senderAddress = addresses[0];
   const tx = payload.params[0] as RpcTxRequest;

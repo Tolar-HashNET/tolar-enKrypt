@@ -338,6 +338,10 @@ const sendButtonTitle = computed(() => {
 
 const setSendMax = () => {
   sendMax.value = true;
+  const balance = selectedAsset.value?.balance ?? "0";
+  const fee = feeAmount.value ?? "21000";
+  const max = new BigNumber(balance).minus(new BigNumber(fee));
+  amount.value = max.gt(0) ? max.toFixed() : "0";
   validateFields();
 };
 

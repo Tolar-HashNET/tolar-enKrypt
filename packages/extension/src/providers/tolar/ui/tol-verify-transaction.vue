@@ -183,7 +183,7 @@ onBeforeMount(async () => {
     );
 
     if(txBody.data.length > 0) {
-      DataHex.value = tx.value.data;
+      DataHex.value = txBody.data;
     }
   } catch (e: unknown) {
     if (typeof e === "string") {

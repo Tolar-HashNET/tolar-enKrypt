@@ -27,7 +27,7 @@ const method: MiddlewareFunction = async function (
   }
 
   const account = await this.KeyRing.getAccount(addresses[0]);
-  res(null, account.address);
+  res(null, account.publicKey);
 };
 
 export default method;

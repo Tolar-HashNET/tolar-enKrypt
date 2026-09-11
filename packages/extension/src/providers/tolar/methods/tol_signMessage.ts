@@ -29,8 +29,8 @@ const method: MiddlewareFunction = async function (
 
   const addresses = await accountsState.getApprovedAddresses(payload.options.domain);
   if (!addresses.length) {
-    return res(null, '');
-  }
+  return res(getCustomError('Please connect your wallet first'));
+}
 
   const senderAddress = addresses[0];
 
