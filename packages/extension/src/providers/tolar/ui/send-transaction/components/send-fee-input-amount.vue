@@ -5,7 +5,7 @@
       ref="inputRef"
       v-model="feeAmount"
       type="text"
-      placeholder="21000"
+      placeholder="21000000000000000"
       :style="{ color: !hasEnoughBalance ? 'red' : 'black' }"
       @keypress="onlyNumber"
       @focus="changeFocus"
@@ -34,7 +34,7 @@ const props = defineProps({
   },
   feeAmount: {
     type: String,
-    default: "21000",
+    default: "21000000000000000",
   },
   currencyName: {
     type: String,
