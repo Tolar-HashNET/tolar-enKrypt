@@ -187,12 +187,21 @@ const sendAction = async () => {
     const signerId = new TolPublicKey(account.value!.publicKey);
     const sender = TolAddress.fromPublicKey(signerId.hexStr);
 
+    // txData.txFee.nativeValue is the total fee (gas * gasPrice) the user
+    // confirmed on the previous screen; gas is fixed at the standard
+    // transfer limit, so gasPrice is derived from it (rounded up so the
+    // resulting total fee never falls below what the user approved, and
+    // below mainnet's minimum required gas price).
+    const gas = 21000n;
+    const totalFee = BigInt(txData.txFee.nativeValue);
+    const gasPrice = (totalFee + gas - 1n) / gas;
+
     const tolTxBody = new TolTxBody(
       sender,
       new TolAddress(txData.toAddress),
       BigInt(txData.toToken.amount),
-      21000n,
-      1n,
+      gas,
+      gasPrice,
       "",
       BigInt(nonce),
       tolarNetwork.networkId

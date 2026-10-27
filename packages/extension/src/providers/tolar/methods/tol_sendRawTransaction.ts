@@ -63,7 +63,7 @@ if (!addresses.length) {
   }
 
   if(tx.gasPrice === undefined || tx.gasPrice === null || tx.gasPrice === '') {
-    tx.gasPrice = "1";
+    tx.gasPrice = "1000000000000";
   }
 
   if(tx.data === undefined || tx.data === null) {

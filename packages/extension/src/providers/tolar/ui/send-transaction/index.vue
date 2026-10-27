@@ -186,7 +186,7 @@ const validateFields = async () => {
   };
 
   if (feeAmount.value === undefined) {
-    feeAmount.value = "21000";
+    feeAmount.value = "21000000000000000";
   }
 
   if (!selectedAsset.value) {
@@ -225,10 +225,10 @@ const validateFields = async () => {
       }
 
       const feeAtto = BigInt(feeAmount.value!);
-      if (feeAtto < 21000n) {
+      if (feeAtto < 21000000000000000n) {
         fieldsValidation.value.feeAmount = false;
         errorMsg.value =
-          `Fee amount must be greater than or equal to 21000 atto${props.network.currencyName}`;
+          `Fee amount must be greater than or equal to 21000000000000000 atto${props.network.currencyName}`;
         return;
       }
     }
@@ -339,7 +339,7 @@ const sendButtonTitle = computed(() => {
 const setSendMax = () => {
   sendMax.value = true;
   const balance = selectedAsset.value?.balance ?? "0";
-  const fee = feeAmount.value ?? "21000";
+  const fee = feeAmount.value ?? "21000000000000000";
   const max = new BigNumber(balance).minus(new BigNumber(fee));
   amount.value = max.gt(0) ? max.toFixed() : "0";
   validateFields();
