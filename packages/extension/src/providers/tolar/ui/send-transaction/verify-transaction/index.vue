@@ -32,7 +32,7 @@
             :network="network"
           />
           <verify-transaction-amount :token="txData.toToken" />
-          <verify-transaction-fee :gas-fee="txData.txFee.nativeValue" :currency-name="network.currencyName" />
+          <verify-transaction-fee :gas-fee="isToken ? tokenFee : txData.txFee.nativeValue" :currency-name="network.currencyName" />
         </div>
       </custom-scrollbar>
 
@@ -75,7 +75,7 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeMount, ref, ComponentPublicInstance } from "vue";
+import { onBeforeMount, ref, computed, ComponentPublicInstance } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import CloseIcon from "@action/icons/common/close-icon.vue";
 import BaseButton from "@action/components/base-button/index.vue";
@@ -126,6 +126,13 @@ const verifyScrollRef = ref<ComponentPublicInstance<HTMLElement>>();
 defineExpose({ verifyScrollRef });
 const network = ref<BaseNetwork>(DEFAULT_TOLAR_NETWORK);
 
+const isToken = txData.TransactionData.data !== "0x";
+const tokenGasLimit = ref(0n);
+const tokenGasPrice = (BigInt(txData.txFee.nativeValue) + 20999n) / 21000n;
+const tokenFee = computed(() =>
+  (tokenGasLimit.value * tokenGasPrice).toString()
+);
+
 onBeforeMount(async () => {
   network.value = (await getNetworkByName(selectedNetwork))!;
   trackSendEvents(SendEventType.SendVerify, { network: network.value.name });
@@ -139,6 +146,26 @@ onBeforeMount(async () => {
     symbol: "loading",
     decimals: network.value.decimals,
   });
+
+  if (isToken) {
+    try {
+      const api = (await network.value.api()) as TolarAPI;
+      const estimate = await api.getGasEstimate({
+        senderAddress: txData.fromAddress,
+        receiverAddress: txData.TransactionData.to,
+        amount: "0",
+        gas: "200000",
+        gasPrice: tokenGasPrice.toString(),
+        data: txData.TransactionData.data,
+        nonce: (await api.getNonce(txData.fromAddress)).toString(),
+        networkId: (network.value as TolarNetwork).networkId,
+      });
+      // 20% extra so the transfer doesn't run out of gas
+      tokenGasLimit.value = (estimate * 12n) / 10n;
+    } catch (e: unknown) {
+      errorMsg.value = logError(e);
+    }
+  }
 });
 
 const close = () => {
@@ -152,6 +179,11 @@ const close = () => {
 const errorMsgReg = /gRPC\serror\scode:\s\d+;\smessage:\s(.+);\sdetails:.*/g;
 
 const sendAction = async () => {
+  if (isToken && tokenGasLimit.value === 0n) {
+    errorMsg.value = "Could not estimate gas for token transfer";
+    return;
+  }
+
   const tolarNetwork = network.value as TolarNetwork;
 
   isProcessing.value = true;
@@ -196,16 +228,31 @@ const sendAction = async () => {
     const totalFee = BigInt(txData.txFee.nativeValue);
     const gasPrice = (totalFee + gas - 1n) / gas;
 
-    const tolTxBody = new TolTxBody(
-      sender,
-      new TolAddress(txData.toAddress),
-      BigInt(txData.toToken.amount),
-      gas,
-      gasPrice,
-      "",
-      BigInt(nonce),
-      tolarNetwork.networkId
-    );
+    let tolTxBody: TolTxBody;
+
+    if (isToken) {
+      tolTxBody = new TolTxBody(
+        sender,
+        new TolAddress(txData.TransactionData.to),
+        0n,
+        tokenGasLimit.value,
+        tokenGasPrice,
+        txData.TransactionData.data,
+        BigInt(nonce),
+        tolarNetwork.networkId
+      );
+    } else {
+      tolTxBody = new TolTxBody(
+        sender,
+        new TolAddress(txData.toAddress),
+        BigInt(txData.toToken.amount),
+        gas,
+        gasPrice,
+        "",
+        BigInt(nonce),
+        tolarNetwork.networkId
+      );
+    }
 
     txHash = await sendRawTransaction(tolTxBody, account.value!, tolarAPI);
   } catch (e: unknown) {

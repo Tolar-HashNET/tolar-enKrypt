@@ -117,6 +117,8 @@ import BigNumber from "bignumber.js";
 import { VerifyTransactionParams } from "@/providers/tolar/ui/types";
 import { routes as RouterNames } from "@/ui/action/router";
 import { TolarToken } from "@/providers/tolar/types/tolar-token";
+import { TolarErc20Token } from "@/providers/tolar/types/tolar-erc20-token";
+import { encodeTransfer } from "@/providers/tolar/libs/erc20";
 import PublicKeyRing from "@/libs/keyring/public-keyring";
 import { TolarNetwork } from "@/providers/tolar/types/tolar-network";
 import TolarAPI from "@/providers/tolar/libs/api";
@@ -221,6 +223,15 @@ const validateFields = async () => {
       if (rawAmount.lt(minAmount)) {
         fieldsValidation.value.amount = false;
         errorMsg.value = "Amount must be greater than 0.000001";
+        return;
+      }
+
+      if (
+        selectedAsset.value instanceof TolarErc20Token &&
+        rawAmount.gt(toBN(selectedAsset.value.balance ?? "0"))
+      ) {
+        fieldsValidation.value.amount = false;
+        errorMsg.value = "Insufficient balance";
         return;
       }
 
@@ -337,6 +348,16 @@ const sendButtonTitle = computed(() => {
 });
 
 const setSendMax = () => {
+  if (selectedAsset.value instanceof TolarErc20Token) {
+    sendMax.value = true;
+    amount.value = fromBase(
+      selectedAsset.value.balance ?? "0",
+      selectedAsset.value.decimals
+    );
+    validateFields();
+    return;
+  }
+
   sendMax.value = true;
   const balance = selectedAsset.value?.balance ?? "0";
   const fee = feeAmount.value ?? "21000000000000000";
@@ -370,12 +391,21 @@ const sendAction = async () => {
     nativeValue: feeAmount.value!,
   };
 
+  const isToken = selectedAsset.value instanceof TolarErc20Token;
+
   const txVerifyInfo: VerifyTransactionParams = {
     TransactionData: {
       from: fromAccount.address,
-      to: addressTo.value,
-      data: "0x" as `0x{string}`,
-      value: amount.value!,
+      to: isToken
+        ? (selectedAsset.value as TolarErc20Token).contract
+        : addressTo.value,
+      data: (isToken
+        ? encodeTransfer(
+            addressTo.value,
+            toBase(amount.value!, selectedAsset.value.decimals!)
+          )
+        : "0x") as `0x${string}`,
+      value: isToken ? "0" : amount.value!,
     },
     toToken: {
       amount: toBase(amount.value!, selectedAsset.value.decimals!),

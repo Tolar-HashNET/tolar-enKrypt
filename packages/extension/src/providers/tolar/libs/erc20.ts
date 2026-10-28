@@ -6,11 +6,18 @@ export const ERC20_SELECTORS = {
   symbol:    "0x95d89b41",
   decimals:  "0x313ce567",
   balanceOf: "0x70a08231",
+  transfer:  "0xa9059cbb",
 } as const;
 
 export function encodeBalanceOf(ethAddress: string): string {
   const addr = ethAddress.slice(2).toLowerCase().padStart(64, "0");
   return ERC20_SELECTORS.balanceOf + addr;
+}
+
+export function encodeTransfer(toTolAddress: string, amount: string): string {
+  const to = tolToEthAddress(toTolAddress).slice(2).toLowerCase().padStart(64, "0");
+  const value = BigInt(amount).toString(16).padStart(64, "0");
+  return ERC20_SELECTORS.transfer + to + value;
 }
 
 export function tolToEthAddress(tolAddress: string): string {

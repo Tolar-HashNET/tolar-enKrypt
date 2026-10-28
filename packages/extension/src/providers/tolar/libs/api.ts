@@ -4,6 +4,7 @@ import { Web3 } from "web3";
 import { logError } from "./utils";
 import {
   INVALID_NONCE,
+  RpcTxRequest,
   RpcTxResponse,
   TolarPlugin, TolNum,
   ZERO_HEX_ADDRESS,
@@ -63,6 +64,10 @@ class API implements ProviderAPIInterface {
     signedTransaction: string
   ): Promise<string> {
     return await this.web3.tolar.sendSignedTransaction(signedTransaction);
+  }
+
+  async getGasEstimate(tx: RpcTxRequest): Promise<bigint> {
+    return BigInt(await this.web3.tolar.getGasEstimate(tx));
   }
 
   // Read-only contract call using tryCallTransaction

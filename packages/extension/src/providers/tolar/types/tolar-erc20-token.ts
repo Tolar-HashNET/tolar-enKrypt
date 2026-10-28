@@ -3,21 +3,24 @@ import TolarAPI from "../libs/api";
 
 export interface TolarErc20TokenOptions extends BaseTokenOptions {
   networkId: number;
+  contract: string;
 }
 
 export class TolarErc20Token extends BaseToken {
   public readonly networkId: number;
+  public readonly contract: string;
 
   constructor(options: TolarErc20TokenOptions) {
     super(options);
     this.networkId = options.networkId;
+    this.contract = options.contract;
   }
 
   public async getLatestUserBalance(
     api: TolarAPI,
     address: string
   ): Promise<string> {
-    return api.getErc20Balance(this.contract!, address, this.networkId);
+    return api.getErc20Balance(this.contract, address, this.networkId);
   }
 
   public send(
