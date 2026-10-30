@@ -85,6 +85,10 @@ export default async (
       };
     }
 
+    // transaction list returns the timestamp in seconds, not milliseconds
+    const time = activity.confirmationTimestamp.getTime();
+    const timestamp = time < 1e12 ? time * 1000 : time;
+
     return {
       nonce: i.toString(),
       network: network.name,
@@ -92,7 +96,7 @@ export default async (
       to,
       chainId: activity.networkId.toString(),
       value,
-      timestamp: activity.confirmationTimestamp.getTime(),
+      timestamp,
       isIncoming: activity.senderAddress !== address,
       transactionHash: activity.transactionHash,
       token,
