@@ -242,6 +242,17 @@ const validateFields = async () => {
           `Fee amount must be greater than or equal to 21000000000000000 atto${props.network.currencyName}`;
         return;
       }
+
+      if (
+        !(selectedAsset.value instanceof TolarErc20Token) &&
+        rawAmount
+          .add(toBN(feeAmount.value!))
+          .gt(toBN(selectedAsset.value.balance ?? "0"))
+      ) {
+        fieldsValidation.value.amount = false;
+        errorMsg.value = "Insufficient balance";
+        return;
+      }
     }
   } catch (error: any) {
     errorMsg.value = error.message || "An error occurred";
@@ -362,7 +373,9 @@ const setSendMax = () => {
   const balance = selectedAsset.value?.balance ?? "0";
   const fee = feeAmount.value ?? "21000000000000000";
   const max = new BigNumber(balance).minus(new BigNumber(fee));
-  amount.value = max.gt(0) ? max.toFixed() : "0";
+  amount.value = max.gt(0)
+    ? fromBase(max.toFixed(), selectedAsset.value.decimals!)
+    : "0";
   validateFields();
 };
 
