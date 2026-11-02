@@ -48,7 +48,7 @@ export class TolarSigner implements SignerInterface {
     const signature = ecsign(msgHashBuffer, privateKeyBuffer);
     signature.v -= BigInt(27);
     const rpcSig = toRpcSig(signature.v, signature.r, signature.s);
-    if (!this.verify(bufferToHex(msgHashBuffer), rpcSig, keyPair.publicKey)) {
+    if (!(await this.verify(bufferToHex(msgHashBuffer), rpcSig, keyPair.publicKey))) {
       throw new Error(Errors.SigningErrors.UnableToVerify);
     }
 
