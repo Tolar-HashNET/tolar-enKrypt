@@ -9,6 +9,12 @@ import { CustomErc20Token, TokenType } from '@/libs/tokens-state/types';
 
 type RawTransactionList = { result: {transactions: object[] }};
 
+// transaction list returns some timestamps in seconds, not milliseconds
+const toMs = (date: Date): number => {
+  const time = date.getTime();
+  return time < 1e12 ? time * 1000 : time;
+};
+
 const getAddressActivity = async (
   address: string,
   endpoint: string,
@@ -33,7 +39,7 @@ const getAddressActivity = async (
     }
 
     const rpcTxs = rawTxResponses.result.transactions.map((rawTxResponse) => converters.toRpcTxResponse(rawTxResponse));
-    return orderBy(rpcTxs, "confirmationTimestamp", "desc");
+    return orderBy(rpcTxs, (tx) => toMs(tx.confirmationTimestamp), "desc");
   } catch (e) {
     console.error('Failed to fetch activity:', e);
     return [];
@@ -85,10 +91,6 @@ export default async (
       };
     }
 
-    // transaction list returns the timestamp in seconds, not milliseconds
-    const time = activity.confirmationTimestamp.getTime();
-    const timestamp = time < 1e12 ? time * 1000 : time;
-
     return {
       nonce: i.toString(),
       network: network.name,
@@ -96,7 +98,7 @@ export default async (
       to,
       chainId: activity.networkId.toString(),
       value,
-      timestamp,
+      timestamp: toMs(activity.confirmationTimestamp),
       isIncoming: activity.senderAddress !== address,
       transactionHash: activity.transactionHash,
       token,
