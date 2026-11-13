@@ -1,2 +1,2 @@
 export const EXTENSION_NAMESPACE =
-  'dfc62431af1c3c1258035e5ab4058b6440e507238cf0fe429ea39827a7ee43fc'; //keccak256("enkrypt")
+  'eefc1fe51caf541526276f37cd7bca43051f8609370f48da6cafd9ab9da21bac'; //keccak256("taquin")
